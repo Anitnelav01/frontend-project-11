@@ -1,0 +1,29 @@
+name: Tests   
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  CI: true
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - run: make install
+      - run: make test
+        env:
+          CI: true
+      - name: Test & publish code coverage
+        uses: paambaati/codeclimate-action@v2.5.0
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.TEST_REPORTER_ID }}
+        with:
+          coverageCommand: make test-coverage
+          debug: true

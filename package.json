@@ -31,7 +31,9 @@
     "webpack-dev-server": "^4.15.0"
   },
   "dependencies": {
+    "@babel/core": "^7.21.8",
     "@babel/eslint-parser": "^7.21.8",
+    "@babel/preset-env": "^7.21.5",
     "@popperjs/core": "^2.11.7",
     "babel-loader": "^9.1.2",
     "bootstrap": "^5.2.3",
@@ -40,6 +42,8 @@
     "eslint-plugin-babel": "^5.3.1",
     "eslint-plugin-import": "^2.27.5",
     "make": "^0.8.1",
-    "mini-css-extract-plugin": "^2.7.5"
+    "mini-css-extract-plugin": "^2.7.5",
+    "on-change": "^4.0.2",
+    "yup": "^1.1.1"
   }
 }

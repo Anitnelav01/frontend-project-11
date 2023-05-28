@@ -2,7 +2,8 @@ import onChange from 'on-change';
 import i18next from 'i18next';
 import axios from 'axios';
 import * as yup from 'yup';
-import ru from './languages/ru';
+import ru from './locale/ru';
+import locale from './locale/locale';
 import render from './view';
 
 const isValidUrl = (url, urls) => {
@@ -15,23 +16,6 @@ const isValidUrl = (url, urls) => {
   return schema.validate(url);
 };
 
-const getUrlThroughProxi = (url) =>
-  `https://allorigins.hexlet.app/get?disableCache=true&url=${url}`;
-
-const getDataRss = (document) => {
-  const title = document.querySelector('title').textContent;
-  const descriotion = document.querySelector('description').textContent;
-  const item = document.querySelectorAll('item');
-  const items = Array.from(item).map((el) => el.textContent.split('/n'));
-  console.log(items);
-  return { title, descriotion, items };
-};
-
-const parseData = (data) => {
-  const parser = new DOMParser();
-  return parser.parseFromString(data, 'text/xml');
-};
-
 export default () => {
   const defaultLang = 'ru';
   const i18nInstance = i18next.createInstance();
@@ -42,6 +26,8 @@ export default () => {
       ru,
     },
   });
+
+  yup.setLocale(locale);
 
   const elements = {
     container: document.querySelector('.container-xxl '),
@@ -58,6 +44,7 @@ export default () => {
     form: {
       processState: 'filling',
       error: null,
+      valid: false,
     },
     feeds: [],
     posts: [],
@@ -68,32 +55,22 @@ export default () => {
     render(elements, initialState, i18nInstance)
   );
 
-    elements.form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const formData = new FormData(e.target);
-      const value = elements.input.value;
+  elements.form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const value = elements.input.value;
   
-      isValidUrl(formData.get('url'), initialState.feeds)
-        .then((link) => axios.get(getUrlThroughProxi(link)))
-        .then((response) => {
-          console.log(`Здесть${initialState.feeds}`)
-          watchState.form.processState = 'loading';
-          const result = parseData(response.data.contents);
-          const dataRSS = getDataRss(result);
-          //console.log(dataRSS.items);
-          console.log(initialState.feeds);
-          //if(initialState.feeds.includes(value) === ture) {
-          //  initialState.form.error.innerHTML = ru.translation.errors.urlExist;
-          //} else {
-            initialState.feeds.push(value);
-          initialState.posts.push(dataRSS.items);
-          console.log(initialState);
-        })
-  
-        .catch((err) => {
-          //console.log(err.message);
-          watchState.form.processState = 'failed';
-
-        });
-    });
+    isValidUrl(formData.get('url'), initialState.feeds)
+      .then((response) => {
+        watchState.form.processState = 'loading';
+        watchState.form.valid = true;
+        initialState.feeds.push(value);
+        console.log(initialState);
+      })
+      .catch((err) => {
+        watchState.form.processState = 'failed';
+        watchState.form.valid = false;
+        console.log(initialState);
+      });
+  });
 }

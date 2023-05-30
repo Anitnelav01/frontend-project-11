@@ -6,22 +6,22 @@ const clearData = (elements) => {
   input.classList.remove('is-invalid');
 };
 
-const handlerFormUrl = (elements, value, i18nInstance, initialState) => {
+const handlerFormUrl = (path, elements, value, i18nInstance, initialState) => {
   const { formFeedback: isFeedback } = elements;
-  switch (value) {
-    case 'loading':
+  switch (path) {
+    case 'form.processState':
       clearData(elements);
       elements.formFeedback.classList.add('text-success');
       isFeedback.textContent = i18nInstance.t(`${value}.success`);
       elements.form.reset();
       elements.input.focus();
       break;
-    case 'failed':
+    case 'form.error':
       console.log(initialState);
       clearData(elements);
       elements.formFeedback.classList.add('text-danger');
       elements.input.classList.add('is-invalid');
-      isFeedback.textContent = i18nInstance.t(`errors[${initialState.form.error}]`);
+      isFeedback.textContent = i18nInstance.t(`errors.${initialState.form.error}`);
       elements.form.reset();
       elements.input.focus();
       break;
@@ -31,7 +31,8 @@ const handlerFormUrl = (elements, value, i18nInstance, initialState) => {
 };
 
 const render = (elements, initialState, i18nInstance) => (path, value) => {
-  handlerFormUrl(elements, value, i18nInstance, initialState);
+  console.log(path);
+  handlerFormUrl(path, elements, value, i18nInstance, initialState);
 };
 
 export default render;

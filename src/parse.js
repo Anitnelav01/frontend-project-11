@@ -11,8 +11,8 @@ const isValidUrl = (url, urls) => {
     .string()
     .trim()
     .required()
-    .notOneOf(urls)
-    .url();
+    .notOneOf(urls, 'exists')
+    .url('notUrl');
   return schema.validate(url);
 };
 
@@ -26,7 +26,7 @@ export default () => {
       ru,
     },
   });
-
+  
   yup.setLocale(locale);
 
   const elements = {
@@ -37,14 +37,13 @@ export default () => {
     submit: document.querySelector('.rss-form button[type="submit"]'),
     feedsBox: document.querySelector(".feeds"),
     postsBox: document.querySelector(".posts"),
-    modal: document.querySelector("#modal")
+    modal: document.querySelector("#modal"),
   };
 
   const initialState = {
     form: {
       processState: 'filling',
       error: null,
-      valid: false,
     },
     feeds: [],
     posts: [],
@@ -55,22 +54,22 @@ export default () => {
     render(elements, initialState, i18nInstance)
   );
 
+
   elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
+
     const formData = new FormData(e.target);
+    const currentUrl = formData.get('url');
     const value = elements.input.value;
   
-    isValidUrl(formData.get('url'), initialState.feeds)
-      .then((response) => {
-        watchState.form.processState = 'loading';
-        watchState.form.valid = true;
-        initialState.feeds.push(value);
-        console.log(initialState);
-      })
-      .catch((err) => {
-        watchState.form.processState = 'failed';
-        watchState.form.valid = false;
-        console.log(initialState);
-      });
+    isValidUrl(currentUrl, initialState.feeds)
+    .then(() => {
+      watchState.form.processState = 'loading';
+      watchState.feeds.push(value);
+    })
+    .catch((err) => {
+      watchState.form.processState = 'failed';
+      watchState.form.error = err.message;
+    });
   });
 }

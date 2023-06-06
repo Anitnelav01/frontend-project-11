@@ -11,7 +11,7 @@ module.exports = {
   },
   devServer: {
     static: path.resolve(__dirname, 'dist'),
-    port: 5043,
+    port: 5039,
     hot: true
   },
   plugins: [

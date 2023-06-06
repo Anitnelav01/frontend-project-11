@@ -3,8 +3,10 @@ import i18next from 'i18next';
 import axios from 'axios';
 import * as yup from 'yup';
 import ru from './locale/ru';
-import locale from './locale/locale';
 import render from './view';
+import locale from './locale/locale';
+import _ from 'lodash';
+import rssParse from './rssParse'
 
 const isValidUrl = (url, urls) => {
   const schema = yup
@@ -14,6 +16,15 @@ const isValidUrl = (url, urls) => {
     .notOneOf(urls, 'exists')
     .url('notUrl');
   return schema.validate(url);
+};
+
+const getProxyUrl = (url) => {
+  const baseUrl = (`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`);
+  const proxyUrl = new URL(baseUrl);
+  proxyUrl.searchParams.set('disableCache', 'true');
+  proxyUrl.searchParams.set('url', url);
+
+  return proxyUrl;
 };
 
 export default () => {
@@ -26,7 +37,7 @@ export default () => {
       ru,
     },
   });
-  
+
   yup.setLocale(locale);
 
   const elements = {
@@ -61,15 +72,28 @@ export default () => {
     const formData = new FormData(e.target);
     const currentUrl = formData.get('url');
     const value = elements.input.value;
-  
+
     isValidUrl(currentUrl, initialState.feeds)
-    .then(() => {
-      watchState.form.processState = 'loading';
-      watchState.feeds.push(value);
-    })
-    .catch((err) => {
-      watchState.form.processState = 'failed';
-      watchState.form.error = err.message;
-    });
+      .then((link) => axios.get(getProxyUrl(link)))
+      .then((response) => {
+        const rssData = rssParse(response.data.contents);
+        rssData.feed.id = _.uniqueId();
+        rssData.feed.url = currentUrl;
+        console.log(rssData);
+        watchState.form.processState = 'loading';
+        watchState.feeds.push(value);
+        watchState.posts = `Здесь должны быть посты`;
+      })
+
+      .catch((err) => {
+        watchState.form.processState = 'failed';
+        console.log(initialState.form.error);
+        if (err.name === 'AxiosError') {
+          watchState.form.error = 'network';
+          console.log(initialState.form.error);
+          return;
+        }
+        watchState.form.error = err.message;
+      });
   });
-}
+};

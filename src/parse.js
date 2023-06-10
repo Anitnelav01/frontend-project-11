@@ -77,12 +77,11 @@ export default () => {
       .then((link) => axios.get(getProxyUrl(link)))
       .then((response) => {
         const rssData = rssParse(response.data.contents);
-        rssData.feed.id = _.uniqueId();
         rssData.feed.url = currentUrl;
-        console.log(rssData);
+        rssData.posts.map((post) => post.id = _.uniqueId());
         watchState.form.processState = 'loading';
         watchState.feeds.push(value);
-        watchState.posts = `Здесь должны быть посты`;
+        watchState.posts = rssData;
       })
 
       .catch((err) => {

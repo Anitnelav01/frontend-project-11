@@ -72,7 +72,6 @@ export default () => {
 
     const formData = new FormData(e.target);
     const currentUrl = formData.get('url');
-    const value = elements.input.value;
  
     isValidUrl(currentUrl, initialState.urls)
       .then((link) => axios.get(getProxyUrl(link)))
@@ -82,9 +81,7 @@ export default () => {
         watchState.form.processState = 'loading';
         watchState.urls.push(currentUrl);
         watchState.feeds.push(rssData.feed);
-        //watchState.posts = rssData.posts;
-        console.log(rssData.posts);
-        console.log(initialState);
+        watchState.posts.push(rssData.posts);
       })
 
       .catch((err) => {

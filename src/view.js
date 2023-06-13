@@ -20,7 +20,6 @@ const handlerFormUrl = (path, elements, value, i18n, initialState) => {
       elements.input.focus();
       break;
       case 'form.error':
-      //console.log(initialState);
       clearData(elements);
       elements.formFeedback.classList.add('text-danger');
       elements.input.classList.add('is-invalid');
@@ -29,7 +28,8 @@ const handlerFormUrl = (path, elements, value, i18n, initialState) => {
       elements.input.focus();
       break;
       case 'posts':
-      const posts = initialState.posts.posts;
+      const posts = initialState.posts;
+      console.log(initialState.posts);
       getPosts(elements, posts, i18n);
       case 'feeds':
       const feeds = initialState.feeds;
@@ -39,11 +39,8 @@ const handlerFormUrl = (path, elements, value, i18n, initialState) => {
   }
 };
 
-
-
 const render = (elements, initialState, i18n) => (path, value) => {
   handlerFormUrl(path, elements, value, i18n, initialState);
-  //console.log(initialState);
 };
 
 export default render;

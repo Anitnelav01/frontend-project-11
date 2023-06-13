@@ -27,11 +27,11 @@ export default (elements, feeds, i18n) => {
     
       li.append(h3);
       li.append(p);
-      ul.append(li);
+      ul.prepend(li);
     }
 
     divBlock.append(h2);
     divContainer.append(divBlock);
     divContainer.append(ul);
-    feedsBox.prepend(divContainer);
+    feedsBox.append(divContainer);
   }

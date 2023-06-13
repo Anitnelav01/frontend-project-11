@@ -7,11 +7,11 @@ module.exports = {
   mode: 'development',
   entry: './src/index.js',
   output: {
-    path: path.resolve(__dirname, 'dist')
+    path: path.resolve(__dirname, 'public')
   },
   devServer: {
-    static: path.resolve(__dirname, 'dist'),
-    port: 5037,
+    static: path.resolve(__dirname, 'public'),
+    port: 5033,
     hot: true
   },
   plugins: [

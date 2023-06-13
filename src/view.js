@@ -29,15 +29,17 @@ const handlerFormUrl = (path, elements, value, i18n, initialState) => {
       elements.input.focus();
       break;
       case 'posts':
-      const feed = initialState.posts.feed;
       const posts = initialState.posts.posts;
-     // console.log(posts[0].title);
       getPosts(elements, posts, i18n);
-      getFeeds(elements, feed, i18n);
-    default:
+      case 'feeds':
+      const feeds = initialState.feeds;
+      getFeeds(elements, feeds, i18n);
+      default:
       break;
   }
 };
+
+
 
 const render = (elements, initialState, i18n) => (path, value) => {
   handlerFormUrl(path, elements, value, i18n, initialState);

@@ -52,6 +52,7 @@ export default () => {
   };
 
   const initialState = {
+    urls:[],
     form: {
       processState: 'filling',
       error: null,
@@ -72,16 +73,18 @@ export default () => {
     const formData = new FormData(e.target);
     const currentUrl = formData.get('url');
     const value = elements.input.value;
-
-    isValidUrl(currentUrl, initialState.feeds)
+ 
+    isValidUrl(currentUrl, initialState.urls)
       .then((link) => axios.get(getProxyUrl(link)))
       .then((response) => {
         const rssData = rssParse(response.data.contents);
         rssData.feed.url = currentUrl;
-        rssData.posts.map((post) => post.id = _.uniqueId());
         watchState.form.processState = 'loading';
-        watchState.feeds.push(value);
-        watchState.posts = rssData;
+        watchState.urls.push(currentUrl);
+        watchState.feeds.push(rssData.feed);
+        //watchState.posts = rssData.posts;
+        console.log(rssData.posts);
+        console.log(initialState);
       })
 
       .catch((err) => {

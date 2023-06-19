@@ -1,6 +1,6 @@
 import './styles.scss';
-import './parse';
-import app from './parse';
+import './app';
+import app from './app';
 
 app();
 

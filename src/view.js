@@ -29,7 +29,7 @@ const handlerFormUrl = (path, elements, value, i18n, initialState) => {
       break;
       case 'posts':
       const posts = initialState.posts;
-      console.log(initialState.posts);
+      //console.log(initialState.posts);
       getPosts(elements, posts, i18n);
       case 'feeds':
       const feeds = initialState.feeds;

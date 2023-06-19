@@ -11,7 +11,7 @@ export default (elements, posts, i18n) => {
   for (const postlist of posts){
     for (const postItem of postlist){
       const { id, title, link } = postItem;
-      console.log(postItem);
+      //console.log(postItem);
       let itemPost = document.createElement('li');
       let linkPost = document.createElement('a');
       const buttonPost = document.createElement('button');
@@ -47,6 +47,7 @@ export default (elements, posts, i18n) => {
   }
 
   const h2 = document.createElement('h2');
+  
   h2.classList.add('card-title' ,'h4');
   h2.textContent = i18n.t('posts');
 

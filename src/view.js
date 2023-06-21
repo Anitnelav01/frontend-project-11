@@ -9,6 +9,31 @@ const clearData = (elements) => {
   input.classList.remove('is-invalid');
 };
 
+const renderModal = (value, state, elements) => {
+  let currentPost;
+  for( const posts of state) {
+    for( const post of posts) {
+      if (post.id == value) {
+        currentPost =  post;
+      }
+    }
+  }
+
+  const {
+    description, id, title, link,
+  } = currentPost;
+  const modal = elements.modal;
+
+  const modalTitle = document.querySelector('.modal-title');
+  const modalBody = document.querySelector('.modal-body');
+  const modalLink = document.querySelector('.full-article');
+
+  modal.setAttribute('data-id', id);
+  modalTitle.textContent = title;
+  modalBody.textContent = description;
+  modalLink.setAttribute('href', link);
+};
+
 const handlerFormUrl = (path, elements, value, i18n, initialState) => {
   const { formFeedback: isFeedback } = elements;
   switch (path) {
@@ -19,7 +44,7 @@ const handlerFormUrl = (path, elements, value, i18n, initialState) => {
       elements.form.reset();
       elements.input.focus();
       break;
-      case 'form.error':
+    case 'form.error':
       clearData(elements);
       elements.formFeedback.classList.add('text-danger');
       elements.input.classList.add('is-invalid');
@@ -27,13 +52,16 @@ const handlerFormUrl = (path, elements, value, i18n, initialState) => {
       elements.form.reset();
       elements.input.focus();
       break;
-      case 'posts':
-      const posts = initialState.posts;
-      //console.log(initialState.posts);
-      getPosts(elements, posts, i18n);
-      case 'feeds':
-      const feeds = initialState.feeds;
-      getFeeds(elements, feeds, i18n);
+    case 'posts':
+      getPosts(elements, initialState.posts, i18n, initialState);
+    case 'feeds':
+      getFeeds(elements, initialState.feeds, i18n, initialState);
+    case 'viewedPosts':
+      getPosts(elements, initialState.posts, i18n);
+      break;
+    case 'modal.postId':
+      renderModal(value, initialState.posts, elements);
+      break;
       default:
       break;
   }

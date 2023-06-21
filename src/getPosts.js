@@ -1,4 +1,4 @@
-export default (elements, posts, i18n) => {
+export default (elements, posts, i18n, state) => {
   const postsBox = elements.postsBox;
   postsBox.innerHTML = '';
   const divContainer = document.createElement('div');
@@ -11,7 +11,6 @@ export default (elements, posts, i18n) => {
   for (const postlist of posts){
     for (const postItem of postlist){
       const { id, title, link } = postItem;
-      //console.log(postItem);
       let itemPost = document.createElement('li');
       let linkPost = document.createElement('a');
       const buttonPost = document.createElement('button');
@@ -45,6 +44,12 @@ export default (elements, posts, i18n) => {
       listsPost.prepend(itemPost);
     }
   }
+
+      /*if (state.viewedPosts.includes(id)) {
+      a.classList.add('fw-normal');
+    } else {
+      a.classList.add('fw-bold');
+    } */
 
   const h2 = document.createElement('h2');
   

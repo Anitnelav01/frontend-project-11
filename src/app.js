@@ -45,8 +45,12 @@ const updatePosts = (state) => {
     if (newPostsWithIds[0].pubDate !== state.posts[0].pubDate) {
       state.posts.unshift(...newPostsWithIds);
     }
+  })      
+  .catch((error) => {
+    console.log(error);///вопрос - ошибка выпадает когда сеть не стабиль? - Неизвестная ошибка. Что-то пошло не так.
   }));
-return Promise.all(promises)
+
+  return Promise.all(promises)
   .finally(setTimeout(() => updatePosts(state), 5000));
 };
 
@@ -71,7 +75,7 @@ export default () => {
     submit: document.querySelector('.rss-form button[type="submit"]'),
     feedsBox: document.querySelector(".feeds"),
     postsBox: document.querySelector(".posts"),
-    modal: document.querySelector("#modal"),
+    modal: document.querySelector(".modal"),
     buttonModal: document.querySelector(".btn .btn-outline-primary .btn-sm"),
   };
 
@@ -82,6 +86,10 @@ export default () => {
     },
     feeds: [],
     posts: [],
+    viewedPosts: new Set(),
+    modal: {
+      postId: null,
+    },
   };
 
   const watchState = onChange(
@@ -109,10 +117,8 @@ export default () => {
 
       .catch((err) => {
         watchState.form.processState = 'failed';
-        console.log(initialState.form.error);
         if (err.name === 'AxiosError') {
           watchState.form.error = 'network';
-          //console.log(initialState.form.error);
           return;
         }
         watchState.form.error = err.message;
@@ -121,45 +127,17 @@ export default () => {
   });
 
   elements.postsBox.addEventListener('click', (e)=> {
-      if (e.target.className === 'btn btn-outline-primary btn-sm') { // Step 3
-        console.log('Click!');
-        const idTarget = e.target.dataset.id;
-        //const result = initialState.posts.includes(url === idTarget);
-        //console.log(result)
-      }
+    e.preventDefault();
 
+      if (e.target.className === 'btn btn-outline-primary btn-sm'){
+        document.querySelector('body').classList.add('modal-open');
+        document.querySelector('#modal').classList.add('show');
+        const { id } = e.target.dataset;
+        if (!id) {
+          return;
+        }
+        watchState.modal.postId = Number(id);
+        watchState.viewedPosts.add(Number(id));
+      }
   })
 };
-
-
-/*<div class="modal fade show" id="modal" tabindex="-1" aria-labelledby="modal" style="display: block;" aria-modal="true" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Задача коммивояжера / Алгоритмы на графах</h5>
-        <button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close">
-          </button>
-          </div>
-          <div class="modal-body text-break">Цель: Учимся опознавать задачу о коммивояжере и решать ее двумя способами: с помощью перебора и с помощью метода ветвей и границ</div>
-          <div class="modal-footer">
-            <a class="btn btn-primary full-article" href="https://ru.hexlet.io/courses/algorithms-graphs/lessons/traveling-salesman-problem/theory_unit" role="button" target="_blank" rel="noopener noreferrer">Читать полностью </a>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-      </div>
-    </div>
-  </div>
-</div>*/
-
-/*<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title"></h5>
-          <button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body text-break"></div>
-        <div class="modal-footer">
-          <a class="btn btn-primary full-article" href="#" role="button" target="_blank" rel="noopener noreferrer">Читать полностью </a><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-        </div>
-      </div>
-    </div>
-  </div>*/

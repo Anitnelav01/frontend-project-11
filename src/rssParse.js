@@ -4,12 +4,11 @@ export default (data) => {
 
   const parseError = xmlDOM.querySelector('parsererror');
   if (parseError) {
-    const err = new Error();
-    err.name = parseError.textContent;
-    err.message = 'notUrl';
-    throw err;
+    const error = new Error(parseError.textContent);
+    error.isParseError = true;
+    throw error;
   }
-  try {
+
     const feed = {
       title: xmlDOM.querySelector('title').textContent,
       description: xmlDOM.querySelector('description').textContent,
@@ -23,8 +22,5 @@ export default (data) => {
       return { title, description, link, id };
     });
     return { feed, posts };
-  } catch (err) {
-    err.message = 'unknown';
-    throw err;
-  }
+
 };

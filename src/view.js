@@ -15,9 +15,9 @@ const renderModal = (value, state, elements) => {
     for( const post of posts) {
       if (post.id == value) {
         currentPost =  post;
-      }
     }
   }
+}
 
   const {
     description, id, title, link,
@@ -26,7 +26,7 @@ const renderModal = (value, state, elements) => {
 
   const modalTitle = document.querySelector('.modal-title');
   const modalBody = document.querySelector('.modal-body');
-  const modalLink = document.querySelector('.full-article');
+  const modalLink = document.querySelector('.btn-primary');
 
   modal.setAttribute('data-id', id);
   modalTitle.textContent = title;

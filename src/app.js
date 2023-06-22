@@ -77,6 +77,7 @@ export default () => {
     postsBox: document.querySelector(".posts"),
     modal: document.querySelector(".modal"),
     buttonModal: document.querySelector(".btn .btn-outline-primary .btn-sm"),
+    myModalEl: document.getElementById('modal'),
   };
 
   const initialState = {
@@ -127,11 +128,10 @@ export default () => {
   });
 
   elements.postsBox.addEventListener('click', (e)=> {
-    e.preventDefault();
+   // e.preventDefault();
 
       if (e.target.className === 'btn btn-outline-primary btn-sm'){
-        document.querySelector('body').classList.add('modal-open');
-        document.querySelector('#modal').classList.add('show');
+
         const { id } = e.target.dataset;
         if (!id) {
           return;

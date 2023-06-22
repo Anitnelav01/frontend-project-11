@@ -34,8 +34,8 @@ export default (elements, posts, i18n, state) => {
       buttonPost.classList.add('btn', 'btn-outline-primary', 'btn-sm');
 
       buttonPost.setAttribute('data-id', id);
-      buttonPost.setAttribute('data-bs-toggle', 'model');
-      buttonPost.setAttribute('data-bs-target', '#model');
+      buttonPost.setAttribute('data-bs-toggle', 'modal');
+      buttonPost.setAttribute('data-bs-target', '#modal');
 
       buttonPost.textContent = i18n.t('preview');
 

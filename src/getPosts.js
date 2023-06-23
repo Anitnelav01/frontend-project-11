@@ -1,4 +1,4 @@
-export default (elements, posts, i18n, state) => {
+export default (elements, posts, i18n) => {
   const postsBox = elements.postsBox;
   postsBox.innerHTML = '';
   const divContainer = document.createElement('div');
@@ -24,6 +24,7 @@ export default (elements, posts, i18n, state) => {
       linkPost.textContent = title;
 
       linkPost.setAttribute('href', link);
+
       linkPost.classList.add('fw-bold');
 
       linkPost.setAttribute('data-id', id);
@@ -35,7 +36,7 @@ export default (elements, posts, i18n, state) => {
 
       buttonPost.setAttribute('data-id', id);
       buttonPost.setAttribute('data-bs-toggle', 'modal');
-      buttonPost.setAttribute('data-bs-target', '#modal');
+      buttonPost.setAttribute('data-bs-target', '#exampleModal');
 
       buttonPost.textContent = i18n.t('preview');
 
@@ -45,14 +46,8 @@ export default (elements, posts, i18n, state) => {
     }
   }
 
-      /*if (state.viewedPosts.includes(id)) {
-      a.classList.add('fw-normal');
-    } else {
-      a.classList.add('fw-bold');
-    } */
-
   const h2 = document.createElement('h2');
-  
+
   h2.classList.add('card-title' ,'h4');
   h2.textContent = i18n.t('posts');
 

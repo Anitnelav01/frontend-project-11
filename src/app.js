@@ -1,4 +1,5 @@
 import onChange from 'on-change';
+import * as bootstrap from 'bootstrap';
 import i18next from 'i18next';
 import axios from 'axios';
 import * as yup from 'yup';
@@ -47,7 +48,7 @@ const updatePosts = (state) => {
     }
   })      
   .catch((error) => {
-    console.log(error);///вопрос - ошибка выпадает когда сеть не стабиль? - Неизвестная ошибка. Что-то пошло не так.
+    console.log(error);
   }));
 
   return Promise.all(promises)
@@ -93,7 +94,7 @@ export default () => {
     },
   };
 
-  const watchState = onChange(
+  const watchedState = onChange(
     initialState,
     render(elements, initialState, i18nInstance)
   );
@@ -102,42 +103,38 @@ export default () => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const currentUrl = formData.get('url');
-    const feedLinks = watchState.feeds.map((feed) => feed.url);
+    const feedLinks = watchedState.feeds.map((feed) => feed.url);
 
     isValidUrl(currentUrl, feedLinks)
       .then((link) => axios.get(getProxyUrl(link)))
       .then((response) => {
-        console.log(response.data.contents)
         const rssData = rssParse(response.data.contents);
         rssData.feed.url = currentUrl;
-        watchState.form.processState = 'loading';
-        watchState.feeds.push(rssData.feed);
-        console.log(initialState.feeds);
-        watchState.posts.push(rssData.posts);
+        watchedState.form.processState = 'loading';
+        watchedState.feeds.push(rssData.feed);
+        watchedState.posts.push(rssData.posts);
       })
 
       .catch((err) => {
-        watchState.form.processState = 'failed';
+        watchedState.form.processState = 'failed';
         if (err.name === 'AxiosError') {
-          watchState.form.error = 'network';
+          watchedState.form.error = 'network';
           return;
         }
-        watchState.form.error = err.message;
+        watchedState.form.error = err.message;
       });
-      updatePosts(watchState);
+      updatePosts(watchedState);
   });
 
   elements.postsBox.addEventListener('click', (e)=> {
-   // e.preventDefault();
+    e.preventDefault();
 
-      if (e.target.className === 'btn btn-outline-primary btn-sm'){
-
-        const { id } = e.target.dataset;
-        if (!id) {
-          return;
-        }
-        watchState.modal.postId = Number(id);
-        watchState.viewedPosts.add(Number(id));
+      const { id } = e.target.dataset;
+      if (!id) {
+        return;
       }
-  })
+      watchedState.modal.postId = Number(id);
+      watchedState.viewedPosts.add(Number(id));
+    }
+  )
 };

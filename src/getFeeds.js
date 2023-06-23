@@ -34,4 +34,5 @@ export default (elements, feeds, i18n) => {
     divContainer.append(divBlock);
     divContainer.append(ul);
     feedsBox.append(divContainer);
-  }
+}
+  

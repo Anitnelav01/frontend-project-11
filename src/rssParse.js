@@ -9,18 +9,18 @@ export default (data) => {
     throw error;
   }
 
-    const feed = {
-      title: xmlDOM.querySelector('title').textContent,
-      description: xmlDOM.querySelector('description').textContent,
-    };
+  const feed = {
+    title: xmlDOM.querySelector('title').textContent,
+    description: xmlDOM.querySelector('description').textContent,
+  };
 
-    const posts = Array.from(xmlDOM.querySelectorAll('item')).map((post) => {
-      const title = post.querySelector('title').textContent;
-      const description = post.querySelector('description').textContent;
-      const link = post.querySelector('link').textContent;
-      const id = post.id = _.uniqueId();
-      return { title, description, link, id };
-    });
-    return { feed, posts };
-
+  const posts = Array.from(xmlDOM.querySelectorAll('item')).map((post) => {
+    const title = post.querySelector('title').textContent;
+    const description = post.querySelector('description').textContent;
+    const link = post.querySelector('link').textContent;
+    const id = post.id = _.uniqueId();
+    return { title, description, link, id };
+  });
+  
+  return { feed, posts };
 };

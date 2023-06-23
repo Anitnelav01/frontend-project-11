@@ -15,15 +15,14 @@ const renderModal = (value, state, elements) => {
     for( const post of posts) {
       if (post.id == value) {
         currentPost =  post;
+      }
     }
   }
-}
 
   const {
     description, id, title, link,
   } = currentPost;
   const modal = elements.modal;
-
   const modalTitle = document.querySelector('.modal-title');
   const modalBody = document.querySelector('.modal-body');
   const modalLink = document.querySelector('.btn-primary');
@@ -32,6 +31,14 @@ const renderModal = (value, state, elements) => {
   modalTitle.textContent = title;
   modalBody.textContent = description;
   modalLink.setAttribute('href', link);
+};
+
+const renderViewedPosts = (initialState, id) => {
+  initialState.viewedPosts.forEach((id) => {
+    const post = document.querySelector(`a[data-id="${id}"]`);
+    post.classList.remove('fw-bold');
+    post.classList.add('fw-normal', 'link-secondary');
+  });
 };
 
 const handlerFormUrl = (path, elements, value, i18n, initialState) => {
@@ -53,11 +60,11 @@ const handlerFormUrl = (path, elements, value, i18n, initialState) => {
       elements.input.focus();
       break;
     case 'posts':
-      getPosts(elements, initialState.posts, i18n, initialState);
-    case 'feeds':
-      getFeeds(elements, initialState.feeds, i18n, initialState);
-    case 'viewedPosts':
       getPosts(elements, initialState.posts, i18n);
+    case 'feeds':
+      getFeeds(elements, initialState.feeds, i18n);
+    case 'viewedPosts':
+      renderViewedPosts(initialState, value);
       break;
     case 'modal.postId':
       renderModal(value, initialState.posts, elements);

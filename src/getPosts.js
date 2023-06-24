@@ -1,5 +1,5 @@
 export default (elements, posts, i18n) => {
-  const { postsBox } = elements.postsBox;
+  const postsBox = elements.postsBox;
   postsBox.innerHTML = '';
   const divContainer = document.createElement('div');
   const divBlockTitle = document.createElement('div');

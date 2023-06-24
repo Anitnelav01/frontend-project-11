@@ -1,5 +1,5 @@
 export default (elements, feeds, i18n) => {
-  const { feedsBox } = elements.feedsBox;
+  const feedsBox = elements.feedsBox;
   feedsBox.innerHTML = '';
 
   const divContainer = document.createElement('div');

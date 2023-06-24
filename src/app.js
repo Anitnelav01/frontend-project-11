@@ -48,7 +48,7 @@ const updatePosts = (state) => {
     }
   })      
   .catch((error) => {
-    console.log(error);
+    console.error(error);
   }));
 
   return Promise.all(promises)

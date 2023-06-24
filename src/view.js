@@ -11,10 +11,10 @@ const clearData = (elements) => {
 
 const renderModal = (value, state, elements) => {
   let currentPost;
-  for( const posts of state) {
-    for( const post of posts) {
+  for (const posts of state) {
+    for (const post of posts) {
       if (post.id == value) {
-        currentPost =  post;
+        currentPost = post;
       }
     }
   }
@@ -22,18 +22,17 @@ const renderModal = (value, state, elements) => {
   const {
     description, id, title, link,
   } = currentPost;
-  const modal = elements.modal;
   const modalTitle = document.querySelector('.modal-title');
   const modalBody = document.querySelector('.modal-body');
   const modalLink = document.querySelector('.btn-primary');
 
-  modal.setAttribute('data-id', id);
+  elements.modal.setAttribute('data-id', id);
   modalTitle.textContent = title;
   modalBody.textContent = description;
   modalLink.setAttribute('href', link);
 };
 
-const renderViewedPosts = (initialState, id) => {
+const renderViewedPosts = (initialState) => {
   initialState.viewedPosts.forEach((id) => {
     const post = document.querySelector(`a[data-id="${id}"]`);
     post.classList.remove('fw-bold');
@@ -61,15 +60,17 @@ const handlerFormUrl = (path, elements, value, i18n, initialState) => {
       break;
     case 'posts':
       getPosts(elements, initialState.posts, i18n);
+      break;
     case 'feeds':
       getFeeds(elements, initialState.feeds, i18n);
+      break;
     case 'viewedPosts':
       renderViewedPosts(initialState, value);
       break;
     case 'modal.postId':
       renderModal(value, initialState.posts, elements);
       break;
-      default:
+    default:
       break;
   }
 };

@@ -23,7 +23,7 @@ export default (data) => {
       title,
       description,
       link,
-      id
+      id,
     };
   });
 

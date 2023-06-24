@@ -7,16 +7,16 @@ module.exports = {
   mode: 'development',
   entry: './src/index.js',
   output: {
-    path: path.resolve(__dirname, 'public')
+    path: path.resolve(__dirname, 'public'),
   },
   devServer: {
     static: path.resolve(__dirname, 'public'),
     port: 5030,
-    hot: true
+    hot: true,
   },
   plugins: [
     new HtmlWebpackPlugin({ template: './index.html' }),
-    new miniCssExtractPlugin()
+    new miniCssExtractPlugin(),
   ],
   module: {
     rules: [
@@ -27,11 +27,11 @@ module.exports = {
             // Adds CSS to the DOM by injecting a `<style>` tag
             loader: 'style-loader',
             // Extracts CSS for each JS file that includes CSS
-            loader: miniCssExtractPlugin.loader
+            loader: miniCssExtractPlugin.loader,
           },
           {
             // Interprets `@import` and `url()` like `import/require()` and will resolve them
-            loader: 'css-loader'
+            loader: 'css-loader',
           },
           {
             // Loader for webpack to process CSS with PostCSS
@@ -39,17 +39,17 @@ module.exports = {
             options: {
               postcssOptions: {
                 plugins: () => [
-                  autoprefixer
-                ]
-              }
-            }
+                  autoprefixer,
+                ],
+              },
+            },
           },
           {
             // Loads a SASS/SCSS file and compiles it to CSS
-            loader: 'sass-loader'
-          }
-        ]
-      }
-    ]
-  }
-}
+            loader: 'sass-loader',
+          },
+        ],
+      },
+    ],
+  },
+};

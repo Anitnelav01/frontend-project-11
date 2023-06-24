@@ -1,12 +1,12 @@
 import onChange from 'on-change';
-import 'bootstrap'
+import 'bootstrap';
 import i18next from 'i18next';
 import axios from 'axios';
 import * as yup from 'yup';
+import { uniqueId, differenceWith, isEqual } from 'lodash';
 import ru from './locale/ru';
 import render from './view';
 import locale from './locale/locale';
-import { uniqueId, differenceWith, isEqual } from 'lodash';
 import rssParse from './rssParse';
 
 const isValidUrl = (url, urls) => {
@@ -46,7 +46,7 @@ const updatePosts = (state) => {
       if (newPostsWithIds[0].pubDate !== state.posts[0].pubDate) {
         state.posts.unshift(...newPostsWithIds);
       }
-    })   
+    })
     .catch((error) => {
       console.error(error);
     }));

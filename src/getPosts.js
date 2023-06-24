@@ -1,5 +1,5 @@
 export default (elements, posts, i18n) => {
-  const postsBox = elements.postsBox;
+  const { postsBox } = elements.postsBox;
   postsBox.innerHTML = '';
   const divContainer = document.createElement('div');
   const divBlockTitle = document.createElement('div');
@@ -8,8 +8,8 @@ export default (elements, posts, i18n) => {
   divContainer.classList.add('card', 'border-0');
   divBlockTitle.classList.add('card-body');
   listsPost.classList.add('list-group', 'border-0', 'rounded-0');
-  for (const postlist of posts){
-    for (const postItem of postlist){
+  for (const postlist of posts) {
+    for (const postItem of postlist) {
       const { id, title, link } = postItem;
       const itemPost = document.createElement('li');
       const linkPost = document.createElement('a');
@@ -20,8 +20,8 @@ export default (elements, posts, i18n) => {
         'justify-content-between',
         'align-items-start',
         'border-0',
-        'border-end-0'
-        );
+        'border-end-0',
+      );
 
       linkPost.textContent = title;
 

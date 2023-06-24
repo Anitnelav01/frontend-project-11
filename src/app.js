@@ -1,5 +1,5 @@
 import onChange from 'on-change';
-import * as bootstrap from 'bootstrap';
+import 'bootstrap'
 import i18next from 'i18next';
 import axios from 'axios';
 import * as yup from 'yup';

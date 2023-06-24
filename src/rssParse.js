@@ -5,7 +5,7 @@ export default (data) => {
   const parseError = xmlDOM.querySelector('parsererror');
   if (parseError) {
     const error = new Error(parseError.textContent);
-    error.isParseError = true;
+    error.message = 'noRss';
     throw error;
   }
 
@@ -21,6 +21,6 @@ export default (data) => {
     const id = post.id = _.uniqueId();
     return { title, description, link, id };
   });
-  
+
   return { feed, posts };
 };

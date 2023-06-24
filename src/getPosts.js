@@ -11,8 +11,8 @@ export default (elements, posts, i18n) => {
   for (const postlist of posts){
     for (const postItem of postlist){
       const { id, title, link } = postItem;
-      let itemPost = document.createElement('li');
-      let linkPost = document.createElement('a');
+      const itemPost = document.createElement('li');
+      const linkPost = document.createElement('a');
       const buttonPost = document.createElement('button');
       itemPost.classList.add(
         'list-group-item',

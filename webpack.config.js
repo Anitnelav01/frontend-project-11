@@ -23,16 +23,10 @@ module.exports = {
       {
         test: /\.(scss)$/,
         use: [
-          {
-            // Adds CSS to the DOM by injecting a `<style>` tag
-            loader: 'style-loader',
-            // Extracts CSS for each JS file that includes CSS
-            loader: MiniCssExtractPlugin,
-          },
-          {
-            // Interprets `@import` and `url()` like `import/require()` and will resolve them
-            loader: 'css-loader',
-          },
+          MiniCssExtractPlugin.loader,
+          'style-loader',
+          'css-loader',
+          'sass-loader',
           {
             // Loader for webpack to process CSS with PostCSS
             loader: 'postcss-loader',
@@ -43,10 +37,6 @@ module.exports = {
                 ],
               },
             },
-          },
-          {
-            // Loads a SASS/SCSS file and compiles it to CSS
-            loader: 'sass-loader',
           },
         ],
       },

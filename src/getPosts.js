@@ -14,12 +14,14 @@ export default (elements, posts, i18n) => {
       let itemPost = document.createElement('li');
       let linkPost = document.createElement('a');
       const buttonPost = document.createElement('button');
-      itemPost.classList.add('list-group-item',
-      'd-flex',
-      'justify-content-between',
-      'align-items-start',
-      'border-0',
-      'border-end-0');
+      itemPost.classList.add(
+        'list-group-item',
+        'd-flex',
+        'justify-content-between',
+        'align-items-start',
+        'border-0',
+        'border-end-0'
+        );
 
       linkPost.textContent = title;
 
@@ -48,11 +50,11 @@ export default (elements, posts, i18n) => {
 
   const h2 = document.createElement('h2');
 
-  h2.classList.add('card-title' ,'h4');
+  h2.classList.add('card-title', 'h4');
   h2.textContent = i18n.t('posts');
 
   divBlockTitle.append(h2);
   divContainer.append(divBlockTitle);
   divContainer.append(listsPost);
   postsBox.append(divContainer);
-}
+};

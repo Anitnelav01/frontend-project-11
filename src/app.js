@@ -7,7 +7,7 @@ import ru from './locale/ru';
 import render from './view';
 import locale from './locale/locale';
 import { uniqueId, differenceWith, isEqual } from 'lodash';
-import rssParse from './rssParse'
+import rssParse from './rssParse';
 
 const isValidUrl = (url, urls) => {
   const schema = yup
@@ -30,29 +30,29 @@ const getProxyUrl = (url) => {
 
 const updatePosts = (state) => {
   const promises = state.feeds.map((feed) => axios.get(getProxyUrl(feed.url))
-  .then((response) => {
-    const { posts } = rssParse(response.data.contents);
-    const postsOfFeed = state.posts.filter(({ feedId }) => feedId === feed.id);
-    const viewedPosts = postsOfFeed.map((post) => {
-      const { title, link, description } = post;
-      return { title, link, description };
-    });
-    const newPosts = differenceWith(posts, viewedPosts, isEqual);
-    const newPostsWithIds = newPosts.map((post) => {
-      post.id = uniqueId();
-      post.feedId = feed.id;
-      return post;
-    });
-    if (newPostsWithIds[0].pubDate !== state.posts[0].pubDate) {
-      state.posts.unshift(...newPostsWithIds);
-    }
-  })      
-  .catch((error) => {
-    console.error(error);
-  }));
+    .then((response) => {
+      const { posts } = rssParse(response.data.contents);
+      const postsOfFeed = state.posts.filter(({ feedId }) => feedId === feed.id);
+      const viewedPosts = postsOfFeed.map((post) => {
+        const { title, link, description } = post;
+        return { title, link, description };
+      });
+      const newPosts = differenceWith(posts, viewedPosts, isEqual);
+      const newPostsWithIds = newPosts.map((post) => {
+        post.id = uniqueId();
+        post.feedId = feed.id;
+        return post;
+      });
+      if (newPostsWithIds[0].pubDate !== state.posts[0].pubDate) {
+        state.posts.unshift(...newPostsWithIds);
+      }
+    })   
+    .catch((error) => {
+      console.error(error);
+    }));
 
   return Promise.all(promises)
-  .finally(setTimeout(() => updatePosts(state), 5000));
+    .finally(setTimeout(() => updatePosts(state), 5000));
 };
 
 export default () => {
@@ -74,10 +74,10 @@ export default () => {
     input: document.getElementById('url-input'),
     formFeedback: document.querySelector('.feedback'),
     submit: document.querySelector('.rss-form button[type="submit"]'),
-    feedsBox: document.querySelector(".feeds"),
-    postsBox: document.querySelector(".posts"),
-    modal: document.querySelector(".modal"),
-    buttonModal: document.querySelector(".btn .btn-outline-primary .btn-sm"),
+    feedsBox: document.querySelector('.feeds'),
+    postsBox: document.querySelector('.posts'),
+    modal: document.querySelector('.modal'),
+    buttonModal: document.querySelector('.btn .btn-outline-primary .btn-sm'),
     myModalEl: document.getElementById('modal'),
   };
 
@@ -96,7 +96,7 @@ export default () => {
 
   const watchedState = onChange(
     initialState,
-    render(elements, initialState, i18nInstance)
+    render(elements, initialState, i18nInstance),
   );
 
   elements.form.addEventListener('submit', (e) => {
@@ -123,18 +123,17 @@ export default () => {
         }
         watchedState.form.error = err.message;
       });
-      updatePosts(watchedState);
+    updatePosts(watchedState);
   });
 
-  elements.postsBox.addEventListener('click', (e)=> {
+  elements.postsBox.addEventListener('click', (e) => {
     e.preventDefault();
 
-      const { id } = e.target.dataset;
-      if (!id) {
-        return;
-      }
-      watchedState.modal.postId = Number(id);
-      watchedState.viewedPosts.add(Number(id));
+    const { id } = e.target.dataset;
+    if (!id) {
+      return;
     }
-  )
+    watchedState.modal.postId = Number(id);
+    watchedState.viewedPosts.add(Number(id));
+  });
 };

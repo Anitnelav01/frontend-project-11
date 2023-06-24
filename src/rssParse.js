@@ -19,7 +19,12 @@ export default (data) => {
     const description = post.querySelector('description').textContent;
     const link = post.querySelector('link').textContent;
     const id = post.id = _.uniqueId();
-    return { title, description, link, id };
+    return {
+      title,
+      description,
+      link,
+      id
+    };
   });
 
   return { feed, posts };

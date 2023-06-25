@@ -12,7 +12,7 @@ const clearData = (elements) => {
 const renderModal = (value, state, elements) => {
   let currentPost;
 
-  state.forEach((items) =>{
+  state.forEach((items) => {
     items.forEach((item) => {
       if (item.id == value) {
         currentPost = item;
@@ -75,7 +75,7 @@ const handlerFormUrl = (path, elements, value, i18n, initialState) => {
       break;
     default:
       break;
-    }
+  }
 };
 
 const render = (elements, initialState, i18n) => (path, value) => {

@@ -7,7 +7,7 @@ export default (elements, posts, i18n) => {
   divContainer.classList.add('card', 'border-0');
   divBlockTitle.classList.add('card-body');
   listsPost.classList.add('list-group', 'border-0', 'rounded-0');
-  posts.forEach((items) =>{
+  posts.forEach((items) => {
     items.forEach((item) => {
       const { id, title, link } = item;
       const itemPost = document.createElement('li');

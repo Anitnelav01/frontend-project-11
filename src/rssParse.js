@@ -1,4 +1,5 @@
 import { uniqueId } from 'lodash';
+
 export default (data) => {
   const parser = new DOMParser();
   const xmlDOM = parser.parseFromString(data, 'text/xml');

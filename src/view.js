@@ -11,13 +11,14 @@ const clearData = (elements) => {
 
 const renderModal = (value, state, elements) => {
   let currentPost;
-  for (const posts of state) {
-    for (const post of posts) {
-      if (post.id == value) {
-        currentPost = post;
+
+  state.forEach((items) =>{
+    items.forEach((item) => {
+      if (item.id == value) {
+        currentPost = item;
       }
-    }
-  }
+    });
+  });
 
   const {
     description, id, title, link,
@@ -59,9 +60,11 @@ const handlerFormUrl = (path, elements, value, i18n, initialState) => {
       elements.input.focus();
       break;
     case 'posts':
+      elements.postsBox.innerHTML = '';
       getPosts(elements, initialState.posts, i18n);
       break;
     case 'feeds':
+      elements.feedsBox.innerHTML = '';
       getFeeds(elements, initialState.feeds, i18n);
       break;
     case 'viewedPosts':

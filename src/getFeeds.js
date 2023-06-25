@@ -1,6 +1,5 @@
 export default (elements, feeds, i18n) => {
-  elements.feedsBox.innerHTML = '';
-
+  const { feedsBox } = elements;
   const divContainer = document.createElement('div');
   const divBlock = document.createElement('div');
   const h2 = document.createElement('h2');
@@ -12,7 +11,7 @@ export default (elements, feeds, i18n) => {
   h2.classList.add('card-title', 'h4');
 
   h2.textContent = i18n.t('feeds');
-  for (const feed of feeds) {
+  feeds.forEach((feed) => {
     const li = document.createElement('li');
     const h3 = document.createElement('h3');
     const p = document.createElement('p');
@@ -27,10 +26,10 @@ export default (elements, feeds, i18n) => {
     li.append(h3);
     li.append(p);
     ul.prepend(li);
-  }
+  });
 
   divBlock.append(h2);
   divContainer.append(divBlock);
   divContainer.append(ul);
-  elements.feedsBox.append(divContainer);
+  feedsBox.append(divContainer);
 };

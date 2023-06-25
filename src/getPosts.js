@@ -1,5 +1,5 @@
 export default (elements, posts, i18n) => {
-  elements.postsBox.innerHTML = '';
+  const { postsBox } = elements;
   const divContainer = document.createElement('div');
   const divBlockTitle = document.createElement('div');
   const listsPost = document.createElement('ul');
@@ -7,9 +7,9 @@ export default (elements, posts, i18n) => {
   divContainer.classList.add('card', 'border-0');
   divBlockTitle.classList.add('card-body');
   listsPost.classList.add('list-group', 'border-0', 'rounded-0');
-  for (const postlist of posts) {
-    for (const postItem of postlist) {
-      const { id, title, link } = postItem;
+  posts.forEach((items) =>{
+    items.forEach((item) => {
+      const { id, title, link } = item;
       const itemPost = document.createElement('li');
       const linkPost = document.createElement('a');
       const buttonPost = document.createElement('button');
@@ -20,7 +20,7 @@ export default (elements, posts, i18n) => {
         'align-items-start',
         'border-0',
         'border-end-0',
-        );
+      );
 
       linkPost.textContent = title;
 
@@ -44,8 +44,8 @@ export default (elements, posts, i18n) => {
       itemPost.append(linkPost);
       itemPost.append(buttonPost);
       listsPost.prepend(itemPost);
-    }
-  }
+    });
+  });
 
   const h2 = document.createElement('h2');
 
@@ -55,5 +55,5 @@ export default (elements, posts, i18n) => {
   divBlockTitle.append(h2);
   divContainer.append(divBlockTitle);
   divContainer.append(listsPost);
-  elements.postsBox.append(divContainer);
+  postsBox.append(divContainer);
 };

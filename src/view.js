@@ -72,7 +72,7 @@ const handlerFormUrl = (path, elements, value, i18n, initialState) => {
       break;
     default:
       break;
-  }
+    }
 };
 
 const render = (elements, initialState, i18n) => (path, value) => {

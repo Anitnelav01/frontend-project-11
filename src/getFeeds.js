@@ -1,6 +1,5 @@
 export default (elements, feeds, i18n) => {
-  const feedsBox = elements.feedsBox;
-  feedsBox.innerHTML = '';
+  elements.feedsBox.innerHTML = '';
 
   const divContainer = document.createElement('div');
   const divBlock = document.createElement('div');
@@ -33,5 +32,5 @@ export default (elements, feeds, i18n) => {
   divBlock.append(h2);
   divContainer.append(divBlock);
   divContainer.append(ul);
-  feedsBox.append(divContainer);
+  elements.feedsBox.append(divContainer);
 };

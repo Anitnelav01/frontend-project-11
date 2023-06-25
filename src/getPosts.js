@@ -1,6 +1,5 @@
 export default (elements, posts, i18n) => {
-  const postsBox = elements.postsBox;
-  postsBox.innerHTML = '';
+  elements.postsBox.innerHTML = '';
   const divContainer = document.createElement('div');
   const divBlockTitle = document.createElement('div');
   const listsPost = document.createElement('ul');
@@ -21,7 +20,7 @@ export default (elements, posts, i18n) => {
         'align-items-start',
         'border-0',
         'border-end-0',
-      );
+        );
 
       linkPost.textContent = title;
 
@@ -56,5 +55,5 @@ export default (elements, posts, i18n) => {
   divBlockTitle.append(h2);
   divContainer.append(divBlockTitle);
   divContainer.append(listsPost);
-  postsBox.append(divContainer);
+  elements.postsBox.append(divContainer);
 };

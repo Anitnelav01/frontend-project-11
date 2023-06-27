@@ -2,5 +2,7 @@
 *.log
 public
 /test-results/
+/test/
+/test-examples/
 /playwright-report/
 /playwright/.cache/

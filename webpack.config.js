@@ -21,29 +21,16 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(scss)$/,
-        use: [
-          {
-            loader: 'style-loader',
-            loader: MiniCssExtractPlugin,
-          },
-          {
-            loader: 'css-loader',
-          },
-          {
-            loader: 'postcss-loader',
-            options: {
-              postcssOptions: {
-                plugins: () => [
-                  autoprefixer,
-                ],
-              },
-            },
-          },
-          {
-            loader: 'sass-loader',
-          },
-        ],
+        test: /\.css$/i,
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader'],
+      },
+      {
+        test: /\.scss$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'sass-loader'],
+      },
+      {
+        test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
+        type: 'asset',
       },
     ],
   },

@@ -1,5 +1,4 @@
 const path = require('path');
-const autoprefixer = require('autoprefixer');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
@@ -11,7 +10,7 @@ module.exports = {
   },
   devServer: {
     static: path.resolve(__dirname, 'public'),
-    port: 5026,
+    port: 5025,
     hot: true,
   },
   plugins: [

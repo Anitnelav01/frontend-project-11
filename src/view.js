@@ -14,7 +14,7 @@ const renderModal = (value, state, elements) => {
 
   state.forEach((items) => {
     items.forEach((item) => {
-      if (item.id == value) {
+      if (Number(item.id) === Number(value)) {
         currentPost = item;
       }
     });

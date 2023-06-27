@@ -6,3 +6,4 @@ public
 /test-examples/
 /playwright-report/
 /playwright/.cache/
+.eslintrc.json

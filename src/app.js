@@ -4,12 +4,12 @@ import i18next from 'i18next';
 import axios from 'axios';
 import * as yup from 'yup';
 import { uniqueId, differenceWith, isEqual } from 'lodash';
-import ru from './locale/ru';
+import resources from './locale/resources';
 import render from './view';
 import locale from './locale/locale';
 import rssParse from './rssParse';
 
-const isValidUrl = (url, urls) => {
+const validate = (url, urls) => {
   const schema = yup
     .string()
     .trim()
@@ -20,12 +20,11 @@ const isValidUrl = (url, urls) => {
 };
 
 const getProxyUrl = (url) => {
-  const baseUrl = (`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`);
-  const proxyUrl = new URL(baseUrl);
+  const proxyUrl = new URL('/get', 'https://allorigins.hexlet.app')
   proxyUrl.searchParams.set('disableCache', 'true');
   proxyUrl.searchParams.set('url', url);
-
-  return proxyUrl;
+  
+  return proxyUrl.toString();
 };
 
 const updatePosts = (state) => {
@@ -61,9 +60,7 @@ export default () => {
   i18nInstance.init({
     lng: defaultLang,
     debug: true,
-    resources: {
-      ru,
-    },
+    resources,
   });
 
   yup.setLocale(locale);
@@ -77,8 +74,7 @@ export default () => {
     feedsBox: document.querySelector('.feeds'),
     postsBox: document.querySelector('.posts'),
     modal: document.querySelector('.modal'),
-    buttonModal: document.querySelector('.btn .btn-outline-primary .btn-sm'),
-    myModalEl: document.getElementById('modal'),
+    buttonModal: document.querySelector('[data-bs-toggle="modal"]'),
   };
 
   const initialState = {
@@ -105,7 +101,7 @@ export default () => {
     const currentUrl = formData.get('url');
     const feedLinks = watchedState.feeds.map((feed) => feed.url);
 
-    isValidUrl(currentUrl, feedLinks)
+    validate(currentUrl, feedLinks)
       .then((link) => axios.get(getProxyUrl(link)))
       .then((response) => {
         const rssData = rssParse(response.data.contents);

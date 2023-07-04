@@ -64,9 +64,11 @@ export default () => {
     lng: defaultLang,
     debug: true,
     resources,
-  });
+  })
+    .then(() => {
+      yup.setLocale(locale);
+    });
 
-  yup.setLocale(locale);
 
   const elements = {
     container: document.querySelector('.container-xxl '),
@@ -108,23 +110,19 @@ export default () => {
       .then((response) => {
         const rssData = rssParse(response.data.contents);
         rssData.feed.url = currentUrl;
+        watchedState.form.processState = 'loading';
         watchedState.feeds.push(rssData.feed);
         watchedState.posts.push(rssData.posts);
       })
-      .then((error) => {
-        if (error) {
-          watchedState.form.processState = 'failed';
-          if (error.name === 'AxiosError') {
-            watchedState.form.error = 'network';
-            return;
-          }
-          
-          watchedState.form.error = error.message;
-        }
 
-        watchedState.form.processState = 'loading';
+      .catch((err) => {
+        watchedState.form.processState = 'failed';
+        if (err.name === 'AxiosError') {
+          watchedState.form.error = 'network';
+          return;
+        }
+        watchedState.form.error = err.message;
       });
-    
     updatePosts(watchedState);
   });
 

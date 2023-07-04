@@ -23,11 +23,8 @@ const validate = (url, urls) => {
     .required()
     .notOneOf(urls, 'exists')
     .url('notUrl');
-  
-  return schema.validate(url)
-    .then((link) => axios.get(getProxyUrl(link)))
-    .catch(error => error.message);
-}
+  return schema.validate(url);
+};
 
 const updatePosts = (state) => {
   const promises = state.feeds.map((feed) => axios.get(getProxyUrl(feed.url))
@@ -107,6 +104,7 @@ export default () => {
     const feedLinks = watchedState.feeds.map((feed) => feed.url);
 
     validate(currentUrl, feedLinks)
+      .then((link) => axios.get(getProxyUrl(link)))
       .then((response) => {
         const rssData = rssParse(response.data.contents);
         rssData.feed.url = currentUrl;

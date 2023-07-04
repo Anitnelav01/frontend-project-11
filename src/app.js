@@ -54,7 +54,6 @@ const updatePosts = (state) => {
 };
 
 export default () => {
-  
   const defaultLang = 'ru';
   const i18nInstance = i18next.createInstance();
   i18nInstance.init({
@@ -65,7 +64,6 @@ export default () => {
     .then(() => {
       yup.setLocale(locale);
     });
-
 
   const elements = {
     container: document.querySelector('.container-xxl '),
@@ -135,4 +133,3 @@ export default () => {
     watchedState.viewedPosts.add(Number(id));
   });
 };
-

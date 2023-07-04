@@ -1,5 +1,5 @@
-import getPosts from './getPosts';
-import getFeeds from './getFeeds';
+import getPosts from './getPosts.js';
+import getFeeds from './getFeeds.js';
 
 const clearData = (elements) => {
   const { input, formFeedback } = elements;

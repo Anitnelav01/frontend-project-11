@@ -1,13 +1,20 @@
 import onChange from 'on-change';
-import 'bootstrap';
 import i18next from 'i18next';
 import axios from 'axios';
 import * as yup from 'yup';
 import { uniqueId, differenceWith, isEqual } from 'lodash';
-import resources from './locale/resources';
-import render from './view';
-import locale from './locale/locale';
-import rssParse from './rssParse';
+import resources from './locale/resources.js';
+import render from './view.js';
+import locale from './locale/locale.js';
+import rssParse from './rssParse.js';
+
+const getProxyUrl = (url) => {
+  const proxyUrl = new URL('/get', 'https://allorigins.hexlet.app');
+  proxyUrl.searchParams.set('disableCache', 'true');
+  proxyUrl.searchParams.set('url', url);
+
+  return proxyUrl.toString();
+};
 
 const validate = (url, urls) => {
   const schema = yup
@@ -16,16 +23,11 @@ const validate = (url, urls) => {
     .required()
     .notOneOf(urls, 'exists')
     .url('notUrl');
-  return schema.validate(url);
-};
-
-const getProxyUrl = (url) => {
-  const proxyUrl = new URL('/get', 'https://allorigins.hexlet.app')
-  proxyUrl.searchParams.set('disableCache', 'true');
-  proxyUrl.searchParams.set('url', url);
   
-  return proxyUrl.toString();
-};
+  return schema.validate(url)
+    .then((link) => axios.get(getProxyUrl(link)))
+    .catch(error => error.message);
+}
 
 const updatePosts = (state) => {
   const promises = state.feeds.map((feed) => axios.get(getProxyUrl(feed.url))
@@ -55,6 +57,7 @@ const updatePosts = (state) => {
 };
 
 export default () => {
+  
   const defaultLang = 'ru';
   const i18nInstance = i18next.createInstance();
   i18nInstance.init({
@@ -102,23 +105,26 @@ export default () => {
     const feedLinks = watchedState.feeds.map((feed) => feed.url);
 
     validate(currentUrl, feedLinks)
-      .then((link) => axios.get(getProxyUrl(link)))
       .then((response) => {
         const rssData = rssParse(response.data.contents);
         rssData.feed.url = currentUrl;
-        watchedState.form.processState = 'loading';
         watchedState.feeds.push(rssData.feed);
         watchedState.posts.push(rssData.posts);
       })
-
-      .catch((err) => {
-        watchedState.form.processState = 'failed';
-        if (err.name === 'AxiosError') {
-          watchedState.form.error = 'network';
-          return;
+      .then((error) => {
+        if (error) {
+          watchedState.form.processState = 'failed';
+          if (error.name === 'AxiosError') {
+            watchedState.form.error = 'network';
+            return;
+          }
+          
+          watchedState.form.error = error.message;
         }
-        watchedState.form.error = err.message;
+
+        watchedState.form.processState = 'loading';
       });
+    
     updatePosts(watchedState);
   });
 
@@ -133,3 +139,4 @@ export default () => {
     watchedState.viewedPosts.add(Number(id));
   });
 };
+

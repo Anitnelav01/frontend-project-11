@@ -16,15 +16,13 @@ const getProxyUrl = (url) => {
   return proxyUrl.toString();
 };
 
-const validate = (url, urls) => {
-  const schema = yup
-    .string()
-    .trim()
-    .required()
-    .notOneOf(urls, 'exists')
-    .url('notUrl');
-  return schema.validate(url);
-};
+const makeSchema = (urls) => yup
+  .string()
+  .trim()
+  .required()
+  .notOneOf(urls, 'exists')
+  .url('notUrl');
+
 
 const updatePosts = (state) => {
   const promises = state.feeds.map((feed) => axios.get(getProxyUrl(feed.url))
@@ -100,8 +98,9 @@ export default () => {
     const formData = new FormData(e.target);
     const currentUrl = formData.get('url');
     const feedLinks = watchedState.feeds.map((feed) => feed.url);
+    const schema = makeSchema(feedLinks);
 
-    validate(currentUrl, feedLinks)
+    schema.validate(currentUrl)
       .then((link) => axios.get(getProxyUrl(link)))
       .then((response) => {
         const rssData = rssParse(response.data.contents);
@@ -110,7 +109,6 @@ export default () => {
         watchedState.feeds.push(rssData.feed);
         watchedState.posts.push(rssData.posts);
       })
-
       .catch((err) => {
         watchedState.form.processState = 'failed';
         if (err.name === 'AxiosError') {

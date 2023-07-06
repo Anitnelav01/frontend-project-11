@@ -23,7 +23,6 @@ const makeSchema = (urls) => yup
   .notOneOf(urls, 'exists')
   .url('notUrl');
 
-
 const updatePosts = (state) => {
   const promises = state.feeds.map((feed) => axios.get(getProxyUrl(feed.url))
     .then((response) => {

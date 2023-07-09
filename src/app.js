@@ -16,12 +16,17 @@ const getProxyUrl = (url) => {
   return proxyUrl.toString();
 };
 
-const makeSchema = (urls) => yup
-  .string()
-  .trim()
-  .required()
-  .notOneOf(urls, 'exists')
-  .url('notUrl');
+const validate = (url, urls) => {
+  const schema = yup
+    .string()
+    .trim()
+    .required()
+    .notOneOf(urls, 'exists')
+    .url('notUrl');
+  schema.validate(url)
+    .then(() => null)
+    .catch(error => error.message)
+};
 
 const updatePosts = (state) => {
   const promises = state.feeds.map((feed) => axios.get(getProxyUrl(feed.url))
@@ -76,7 +81,11 @@ export default () => {
 
   const initialState = {
     form: {
-      processState: 'filling',
+      isValidate: true,
+      error: null,
+    },
+    loadingProcess: {
+      state: 'filling',
       error: null,
     },
     feeds: [],
@@ -86,6 +95,21 @@ export default () => {
       postId: null,
     },
   };
+
+  const loadRssFeed = (url, watchedState) => {
+    axios.get(getProxyUrl(url))
+      .then((response) => {
+        const rssData = rssParse(response.data.contents);
+        watchedState.feeds.push(rssData.feed);
+        watchedState.posts.push(rssData.posts);
+      })
+      .catch((err) => {
+        if (err.name === 'AxiosError') {
+          watchedState.form.error = 'network';
+          return;
+        }
+      });
+  }
 
   const watchedState = onChange(
     initialState,
@@ -97,25 +121,21 @@ export default () => {
     const formData = new FormData(e.target);
     const currentUrl = formData.get('url');
     const feedLinks = watchedState.feeds.map((feed) => feed.url);
-    const schema = makeSchema(feedLinks);
-
-    schema.validate(currentUrl)
-      .then((link) => axios.get(getProxyUrl(link)))
-      .then((response) => {
-        const rssData = rssParse(response.data.contents);
-        rssData.feed.url = currentUrl;
-        watchedState.form.processState = 'loading';
-        watchedState.feeds.push(rssData.feed);
-        watchedState.posts.push(rssData.posts);
+    
+    validate(currentUrl, feedLinks)
+      .then(() => {
+        watchedState.form.isValidate = true;
+        watchedState.form.error = null;
+        watchedState.loadingProcess.state = 'loading';
+        loadRssFeed(currentUrl, watchedState);
       })
-      .catch((err) => {
-        watchedState.form.processState = 'failed';
-        if (err.name === 'AxiosError') {
-          watchedState.form.error = 'network';
-          return;
-        }
-        watchedState.form.error = err.message;
+      .then(error => {
+        watchedState.loadingProcess.state = 'failed';
+        watchedState.form.isValidate = false;
+        watchedState.loadingProcess.error = error.message;
+        return;
       });
+    
     updatePosts(watchedState);
   });
 

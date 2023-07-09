@@ -44,18 +44,18 @@ const renderViewedPosts = (initialState) => {
 const handlerFormUrl = (path, elements, value, i18n, initialState) => {
   const { formFeedback: isFeedback } = elements;
   switch (path) {
-    case 'form.processState':
+    case 'loadingProcess.state':
       clearData(elements);
       elements.formFeedback.classList.add('text-success');
       isFeedback.textContent = i18n.t(`${value}.success`);
       elements.form.reset();
       elements.input.focus();
       break;
-    case 'form.error':
+    case 'loadingProcess.error':
       clearData(elements);
       elements.formFeedback.classList.add('text-danger');
       elements.input.classList.add('is-invalid');
-      isFeedback.textContent = i18n.t(`errors.${initialState.form.error}`);
+      isFeedback.textContent = i18n.t(`errors.${initialState.loadingProcess.error}`);
       elements.form.reset();
       elements.input.focus();
       break;

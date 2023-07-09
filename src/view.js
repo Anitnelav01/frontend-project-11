@@ -46,8 +46,15 @@ const handlerFormUrl = (path, elements, value, i18n, initialState) => {
   switch (path) {
     case 'loadingProcess.state':
       clearData(elements);
-      elements.formFeedback.classList.add('text-success');
-      isFeedback.textContent = i18n.t(`${value}.success`);
+      if (initialState.loadingProcess.state === 'loading') {
+        elements.formFeedback.classList.add('text-success');
+        isFeedback.textContent = i18n.t(`${value}.success`);
+      }
+      if (initialState.loadingProcess.state === 'failed') {
+        elements.formFeedback.classList.add('text-danger');
+        elements.input.classList.add('is-invalid');
+        isFeedback.textContent = i18n.t(`errors.${initialState.form.error}`);
+      }
       elements.form.reset();
       elements.input.focus();
       break;
@@ -56,6 +63,15 @@ const handlerFormUrl = (path, elements, value, i18n, initialState) => {
       elements.formFeedback.classList.add('text-danger');
       elements.input.classList.add('is-invalid');
       isFeedback.textContent = i18n.t(`errors.${initialState.loadingProcess.error}`);
+      elements.form.reset();
+      elements.input.focus();
+      break;
+    case 'form.error':
+      console.log(initialState.form.error)
+      clearData(elements);
+      elements.formFeedback.classList.add('text-danger');
+      elements.input.classList.add('is-invalid');
+      isFeedback.textContent = i18n.t(`errors.${initialState.form.error}`);
       elements.form.reset();
       elements.input.focus();
       break;

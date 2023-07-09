@@ -21,11 +21,11 @@ const validate = (url, urls) => {
     .string()
     .trim()
     .required()
-    .url('notUrl')
-    .notOneOf(urls, 'exists');
+    .url()
+    .notOneOf(urls);
   return schema.validate(url)
     .then(() => null)
-    .catch((error) => error.message);
+    .catch((error) => error.message.key);
 };
 
 const updatePosts = (state) => {
@@ -100,14 +100,16 @@ export default () => {
     axios.get(getProxyUrl(url))
       .then((response) => {
         const rssData = rssParse(response.data.contents);
-        watchedState.feeds.push(rssData.feed);
-        watchedState.posts.push(rssData.posts);
-      })
-      .catch((err) => {
-        if (err.name === 'AxiosError') {
-          watchedState.form.error = 'network';
+        rssData.feed.url = url;
+        if (watchedState.form.error !== null) {
+          watchedState.loadingProcess.state = 'failed';
           return;
-        }
+        };
+        if (watchedState.form.error === null) {
+          watchedState.loadingProcess.state = 'loading';
+          watchedState.feeds.push(rssData.feed);
+          watchedState.posts.push(rssData.posts);
+        };
       });
   }
 
@@ -121,20 +123,23 @@ export default () => {
     const formData = new FormData(e.target);
     const currentUrl = formData.get('url');
     const feedLinks = initialState.feeds.map((feed) => feed.url);
-    console.log(initialState.feeds)
 
     validate(currentUrl, feedLinks)
       .then((error) => {
-        watchedState.loadingProcess.state = 'failed';
+        if (error.name === 'AxiosError') {
+          watchedState.form.error = 'network';
+          return;
+        }
         watchedState.form.isValidate = false;
+        watchedState.form.error = error;
         return;
       })
-      .then(() => {
+      .catch(() => {
         watchedState.form.isValidate = true;
         watchedState.form.error = null;
-        watchedState.loadingProcess.state = 'loading';
-        readingData(currentUrl, watchedState);
-      })
+      });
+    
+    readingData(currentUrl, watchedState);
     updatePosts(watchedState);
   });
 

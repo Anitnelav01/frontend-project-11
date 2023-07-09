@@ -21,11 +21,11 @@ const validate = (url, urls) => {
     .string()
     .trim()
     .required()
-    .notOneOf(urls, 'exists')
-    .url('notUrl');
-  schema.validate(url)
+    .url('notUrl')
+    .notOneOf(urls, 'exists');
+  return schema.validate(url)
     .then(() => null)
-    .catch(error => error.message)
+    .catch((error) => error.message);
 };
 
 const updatePosts = (state) => {
@@ -96,7 +96,7 @@ export default () => {
     },
   };
 
-  const loadRssFeed = (url, watchedState) => {
+  const readingData = (url, watchedState) => {
     axios.get(getProxyUrl(url))
       .then((response) => {
         const rssData = rssParse(response.data.contents);
@@ -120,22 +120,21 @@ export default () => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const currentUrl = formData.get('url');
-    const feedLinks = watchedState.feeds.map((feed) => feed.url);
-    
+    const feedLinks = initialState.feeds.map((feed) => feed.url);
+    console.log(initialState.feeds)
+
     validate(currentUrl, feedLinks)
+      .then((error) => {
+        watchedState.loadingProcess.state = 'failed';
+        watchedState.form.isValidate = false;
+        return;
+      })
       .then(() => {
         watchedState.form.isValidate = true;
         watchedState.form.error = null;
         watchedState.loadingProcess.state = 'loading';
-        loadRssFeed(currentUrl, watchedState);
+        readingData(currentUrl, watchedState);
       })
-      .then(error => {
-        watchedState.loadingProcess.state = 'failed';
-        watchedState.form.isValidate = false;
-        watchedState.loadingProcess.error = error.message;
-        return;
-      });
-    
     updatePosts(watchedState);
   });
 

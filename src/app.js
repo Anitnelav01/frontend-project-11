@@ -25,7 +25,7 @@ const validate = (url, urls) => {
     .notOneOf(urls);
   return schema.validate(url)
     .then(() => null)
-    .catch((error) => error.message.key);
+    .catch(error => error.message.key);
 };
 
 const updatePosts = (state) => {
@@ -99,17 +99,18 @@ export default () => {
   const readingData = (url, watchedState) => {
     axios.get(getProxyUrl(url))
       .then((response) => {
-        const rssData = rssParse(response.data.contents);
-        rssData.feed.url = url;
+        const { feed, posts } = rssParse(response.data.contents);
+
+        feed.url = url;
         if (watchedState.form.error !== null) {
           watchedState.loadingProcess.state = 'failed';
-          return;
         };
         if (watchedState.form.error === null) {
           watchedState.loadingProcess.state = 'loading';
-          watchedState.feeds.push(rssData.feed);
-          watchedState.posts.push(rssData.posts);
+          watchedState.feeds.push(feed);
+          watchedState.posts.push(posts);
         };
+        return;
       });
   }
 
@@ -130,13 +131,12 @@ export default () => {
           watchedState.form.error = 'network';
           return;
         }
-        watchedState.form.isValidate = false;
-        watchedState.form.error = error;
+        watchedState.form = { error, isValidate: false };
         return;
       })
       .catch(() => {
-        watchedState.form.isValidate = true;
-        watchedState.form.error = null;
+        watchedState.form = { error: null, isValidate: true };
+        watchedState.loadingProcess.error = null;
       });
     
     readingData(currentUrl, watchedState);

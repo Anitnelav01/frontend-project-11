@@ -111,6 +111,12 @@ export default () => {
           watchedState.posts.push(posts);
         };
         return;
+      })
+      .catch((error) => {
+        if (watchedState.form.error !== null) {
+          watchedState.loadingProcess.state = 'failed';
+        };
+        console.log(error);
       });
   }
 
@@ -131,11 +137,13 @@ export default () => {
           watchedState.form.error = 'network';
           return;
         }
-        watchedState.form = { error, isValidate: false };
+        watchedState.form = { error: error, isValidate: false };
+        watchedState.loadingProcess.error = null;
         return;
       })
       .catch(() => {
-        watchedState.form = { error: null, isValidate: true };
+        watchedState.form.error = null;
+        watchedState.form.isValidate = true;
         watchedState.loadingProcess.error = null;
       });
     

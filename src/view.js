@@ -66,8 +66,7 @@ const handlerFormUrl = (path, elements, value, i18n, initialState) => {
       elements.form.reset();
       elements.input.focus();
       break;
-    case 'form.error':
-      console.log(initialState.form.error)
+    case 'form':
       clearData(elements);
       elements.formFeedback.classList.add('text-danger');
       elements.input.classList.add('is-invalid');

@@ -1,13 +1,14 @@
 import { uniqueId } from 'lodash';
 
-export default (data) => {
+export default (data, state) => {
   const parser = new DOMParser();
   const xmlDOM = parser.parseFromString(data, 'text/xml');
 
   const parseError = xmlDOM.querySelector('parsererror');
   if (parseError) {
     const error = new Error(parseError.textContent);
-    error.message = 'noRss';
+    error.isParseError = true;
+    state.form.error = 'noRss';
     throw error;
   }
 

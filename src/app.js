@@ -99,7 +99,7 @@ export default () => {
   const readingData = (url, watchedState) => {
     axios.get(getProxyUrl(url))
       .then((response) => {
-        const { feed, posts } = rssParse(response.data.contents);
+        const { feed, posts } = rssParse(response.data.contents, watchedState);
 
         feed.url = url;
         if (watchedState.form.error !== null) {

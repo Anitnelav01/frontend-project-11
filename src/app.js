@@ -133,7 +133,7 @@ export default () => {
 
     validate(currentUrl, feedLinks)
       .then((error) => {
-        if (error.isAxiosError) {
+        if (error === 'isAxiosError') {
           watchedState.form.error = 'network';
           return;
         }

@@ -15,7 +15,7 @@ export default {
   },
   devServer: {
     static: path.resolve(dirname, 'public'),
-    port: 5018,
+    port: 5016,
     hot: true,
   },
   plugins: [

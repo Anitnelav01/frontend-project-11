@@ -48,7 +48,11 @@ const updatePosts = (state) => {
       }
     })
     .catch((error) => {
-      console.error(error);
+      console.log(error);
+      if (error === "AxiosError") {
+        state.form.error = 'network';
+        return;
+      };
     }));
 
   return Promise.all(promises)
@@ -113,9 +117,6 @@ export default () => {
         return;
       })
       .catch((error) => {
-        if (watchedState.form.error !== null) {
-          watchedState.loadingProcess.state = 'failed';
-        };
         console.log(error);
       });
   }
@@ -136,19 +137,18 @@ export default () => {
         if (error === 'isAxiosError') {
           watchedState.form.error = 'network';
           return;
-        }
+        };
         watchedState.form = { error: error, isValidate: false };
-        watchedState.loadingProcess.error = null;
-        return;
+       // watchedState.loadingProcess.error = null;
       })
       .catch(() => {
-        watchedState.form.error = null;
-        watchedState.form.isValidate = true;
-        watchedState.loadingProcess.error = null;
+        watchedState.form = { error: '', isValidate: true };
+        //watchedState.loadingProcess.error = null;
       });
     
     readingData(currentUrl, watchedState);
     updatePosts(watchedState);
+    console.log(initialState);
   });
 
   elements.postsBox.addEventListener('click', (e) => {

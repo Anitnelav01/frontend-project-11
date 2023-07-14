@@ -51,7 +51,7 @@ const handlerFormUrl = (path, elements, value, i18n, initialState) => {
       }
       if (initialState.loadingProcess.state === 'success') {
         elements.formFeedback.classList.add('text-success');
-        isFeedback.textContent = i18n.t(`loading.success`);
+        isFeedback.textContent = i18n.t('loading.success');
         elements.form.reset();
         elements.input.focus();
       }

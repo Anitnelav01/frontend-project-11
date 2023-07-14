@@ -25,7 +25,7 @@ const validate = (url, urls) => {
     .notOneOf(urls);
   return schema.validate(url)
     .then(() => null)
-    .catch(error => error.message.key);
+    .catch((error) => error.message.key);
 };
 
 const updatePosts = (state) => {
@@ -55,35 +55,34 @@ const updatePosts = (state) => {
     .finally(setTimeout(() => updatePosts(state), 5000));
 };
 
-const loadRss = (url, watchedState) => {
-  watchedState.loadingProcess.state = 'loading';
-  
-    axios.get(getProxyUrl(url))
-      .then((response) => {
-        const { feed, posts } = rssParse(response.data.contents);
-
-        feed.url = url;
-        watchedState.loadingProcess.state = 'success';
-        watchedState.feeds.push(feed);
-        watchedState.posts.push(posts);
-      })
-      .catch((error) => {
-        getError(error, watchedState);
-        watchedState.loadingProcess.state = 'failed';
-      });
-  }
-
 const getError = (error, watchedState) => {
-  console.log(error.name)
   if (error.name === 'AxiosError') {
     watchedState.loadingProcess.error = 'network';
-  }
+  };
   if (error.name === 'parserError') {
     watchedState.loadingProcess.error = 'noRss';
-  }
+  };
   if (error.name !== 'AxiosError' && error.name !== 'parserError' ) {
     watchedState.loadingProcess.error = 'unknown';
-  }
+  };
+};
+
+const loadRss = (url, watchedState) => {
+  watchedState.loadingProcess.state = 'loading';
+
+  axios.get(getProxyUrl(url))
+    .then((response) => {
+      const { feed, posts } = rssParse(response.data.contents);
+
+      feed.url = url;
+      watchedState.loadingProcess.state = 'success';
+      watchedState.feeds.push(feed);
+      watchedState.posts.push(posts);
+    })
+    .catch((error) => {
+      getError(error, watchedState);
+      watchedState.loadingProcess.state = 'failed';
+    });
 };
   
 export default () => {
@@ -144,12 +143,12 @@ export default () => {
         watchedState.form = { error, isValidate: false };
         return;
       };
-        
+
       watchedState.form = { error: '', isValidate: true };
-        
+
       loadRss(url, watchedState);
       });
-    
+
     updatePosts(watchedState);
     console.log(initialState);
   });

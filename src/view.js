@@ -47,32 +47,26 @@ const handlerFormUrl = (path, elements, value, i18n, initialState) => {
     case 'loadingProcess.state':
       clearData(elements);
       if (initialState.loadingProcess.state === 'loading') {
-        elements.formFeedback.classList.add('text-success');
-        isFeedback.textContent = i18n.t(`${value}.success`);
+        isFeedback.textContent = '';
       }
+      if (initialState.loadingProcess.state === 'success') {
+        elements.formFeedback.classList.add('text-success');
+        isFeedback.textContent = i18n.t(`loading.success`);
+        elements.form.reset();
+        elements.input.focus();
+      }
+
       if (initialState.loadingProcess.state === 'failed') {
         elements.formFeedback.classList.add('text-danger');
         elements.input.classList.add('is-invalid');
-        isFeedback.textContent = i18n.t(`errors.${initialState.form.error}`);
+        isFeedback.textContent = i18n.t(`errors.${initialState.loadingProcess.error}`);
       }
-      elements.form.reset();
-      elements.input.focus();
-      break;
-    case 'loadingProcess.error':
-      clearData(elements);
-      elements.formFeedback.classList.add('text-danger');
-      elements.input.classList.add('is-invalid');
-      isFeedback.textContent = i18n.t(`errors.${initialState.loadingProcess.error}`);
-      //elements.form.reset();
-      //elements.input.focus();
       break;
     case 'form':
       clearData(elements);
       elements.formFeedback.classList.add('text-danger');
       elements.input.classList.add('is-invalid');
       isFeedback.textContent = i18n.t(`errors.${initialState.form.error}`);
-      //elements.form.reset();
-      //elements.input.focus();
       break;
     case 'posts':
       elements.postsBox.innerHTML = '';

@@ -58,13 +58,13 @@ const updatePosts = (state) => {
 const getError = (error, watchedState) => {
   if (error.name === 'AxiosError') {
     watchedState.loadingProcess.error = 'network';
-  };
+  }
   if (error.name === 'parserError') {
     watchedState.loadingProcess.error = 'noRss';
-  };
-  if (error.name !== 'AxiosError' && error.name !== 'parserError' ) {
+  }
+  if (error.name !== 'AxiosError' && error.name !== 'parserError') {
     watchedState.loadingProcess.error = 'unknown';
-  };
+  }
 };
 
 const loadRss = (url, watchedState) => {
@@ -84,7 +84,7 @@ const loadRss = (url, watchedState) => {
       watchedState.loadingProcess.state = 'failed';
     });
 };
-  
+
 export default () => {
   const defaultLang = 'ru';
   const i18nInstance = i18next.createInstance();
@@ -139,14 +139,14 @@ export default () => {
 
     validate(url, urls)
       .then((error) => {
-      if (error) {
-        watchedState.form = { error, isValidate: false };
-        return;
-      };
+        if (error) {
+          watchedState.form = { error, isValidate: false };
+          return;
+        }
 
-      watchedState.form = { error: '', isValidate: true };
+        watchedState.form = { error: '', isValidate: true };
 
-      loadRss(url, watchedState);
+        loadRss(url, watchedState);
       });
 
     updatePosts(watchedState);

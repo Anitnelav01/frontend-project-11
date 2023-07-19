@@ -1,3 +1,4 @@
+import onChange from 'on-change';
 import getPosts from './getPosts.js';
 import getFeeds from './getFeeds.js';
 
@@ -87,8 +88,8 @@ const handlerFormUrl = (path, elements, value, i18n, initialState) => {
   }
 };
 
-const render = (elements, initialState, i18n) => (path, value) => {
+const render = (elements, initialState, i18n) => onChange(initialState, (path, value) => {
   handlerFormUrl(path, elements, value, i18n, initialState);
-};
+});
 
 export default render;

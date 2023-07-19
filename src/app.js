@@ -1,4 +1,3 @@
-import onChange from 'on-change';
 import i18next from 'i18next';
 import axios from 'axios';
 import * as yup from 'yup';
@@ -55,15 +54,13 @@ const updatePosts = (state) => {
     .finally(setTimeout(() => updatePosts(state), 5000));
 };
 
-const getError = (error, watchedState) => {
-  if (error.name === 'AxiosError') {
-    watchedState.loadingProcess.error = 'network';
-  }
-  if (error.name === 'parserError') {
-    watchedState.loadingProcess.error = 'noRss';
-  }
-  if (error.name !== 'AxiosError' && error.name !== 'parserError') {
-    watchedState.loadingProcess.error = 'unknown';
+const getError = (error) => {
+  if (error.isAxiosError) {
+    return 'network';
+  } else if (error.isParseError) {
+    return 'noRss';
+  } else {
+    return 'unknown';
   }
 };
 
@@ -75,12 +72,18 @@ const loadRss = (url, watchedState) => {
       const { feed, posts } = rssParse(response.data.contents);
 
       feed.url = url;
+      posts.map((post) => {
+        const postId = post;
+        postId.id = _.uniqueId();
+        return postId;
+      });
       watchedState.loadingProcess.state = 'success';
       watchedState.feeds.push(feed);
-      watchedState.posts.push(posts);
+      watchedState.posts.push([...posts]);
     })
     .catch((error) => {
-      getError(error, watchedState);
+      const err = getError(error);
+      watchedState.loadingProcess.error = err;
       watchedState.loadingProcess.state = 'failed';
     });
 };
@@ -98,7 +101,7 @@ export default () => {
     });
 
   const elements = {
-    container: document.querySelector('.container-xxl '),
+    container: document.querySelector('.container-xxl'),
     form: document.querySelector('.rss-form'),
     input: document.getElementById('url-input'),
     formFeedback: document.querySelector('.feedback'),
@@ -126,10 +129,7 @@ export default () => {
     },
   };
 
-  const watchedState = onChange(
-    initialState,
-    render(elements, initialState, i18nInstance),
-  );
+  const watchedState = render(elements, initialState, i18nInstance);
 
   elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -143,24 +143,19 @@ export default () => {
           watchedState.form = { error, isValidate: false };
           return;
         }
-
         watchedState.form = { error: '', isValidate: true };
-
         loadRss(url, watchedState);
       });
-
-    updatePosts(watchedState);
-    console.log(initialState);
   });
 
   elements.postsBox.addEventListener('click', (e) => {
-    e.preventDefault();
-
     const { id } = e.target.dataset;
     if (!id) {
       return;
     }
     watchedState.modal.postId = Number(id);
     watchedState.viewedPosts.add(Number(id));
+
+    updatePosts(watchedState);
   });
 };

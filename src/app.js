@@ -59,9 +59,8 @@ const getError = (error) => {
     return 'network';
   } else if (error.isParseError) {
     return 'noRss';
-  } else {
-    return 'unknown';
   }
+    return 'unknown';
 };
 
 const loadRss = (url, watchedState) => {
@@ -74,7 +73,7 @@ const loadRss = (url, watchedState) => {
       feed.url = url;
       posts.map((post) => {
         const postId = post;
-        postId.id = _.uniqueId();
+        postId.id = uniqueId();
         return postId;
       });
       watchedState.loadingProcess.state = 'success';
@@ -129,7 +128,7 @@ export default () => {
     },
   };
 
-  const watchedState = render(elements, initialState, i18nInstance);
+  const view = render(elements, initialState, i18nInstance);
 
   elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -140,11 +139,11 @@ export default () => {
     validate(url, urls)
       .then((error) => {
         if (error) {
-          watchedState.form = { error, isValidate: false };
+          view.form = { error, isValidate: false };
           return;
         }
-        watchedState.form = { error: '', isValidate: true };
-        loadRss(url, watchedState);
+        view.form = { error: '', isValidate: true };
+        loadRss(url, view);
       });
   });
 
@@ -153,9 +152,9 @@ export default () => {
     if (!id) {
       return;
     }
-    watchedState.modal.postId = Number(id);
-    watchedState.viewedPosts.add(Number(id));
+    view.modal.postId = Number(id);
+    view.viewedPosts.add(Number(id));
 
-    updatePosts(watchedState);
+    updatePosts(view);
   });
 };

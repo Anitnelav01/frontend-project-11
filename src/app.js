@@ -57,10 +57,11 @@ const updatePosts = (state) => {
 const getError = (error) => {
   if (error.isAxiosError) {
     return 'network';
-  } else if (error.isParseError) {
+  }
+  if (error.isParseError) {
     return 'noRss';
   }
-    return 'unknown';
+  return 'unknown';
 };
 
 const loadRss = (url, watchedState) => {

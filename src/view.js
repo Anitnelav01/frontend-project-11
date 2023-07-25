@@ -32,14 +32,6 @@ const renderModal = (value, state, elements) => {
   modalLink.setAttribute('href', link);
 };
 
-const renderViewedPosts = (initialState) => {
-  initialState.viewedPosts.forEach((id) => {
-    const post = document.querySelector(`a[data-id="${id}"]`);
-    post.classList.remove('fw-bold');
-    post.classList.add('fw-normal', 'link-secondary');
-  });
-};
-
 const handlerFormUrl = (path, elements, value, i18n, initialState) => {
   const { formFeedback: isFeedback } = elements;
   switch (path) {
@@ -75,7 +67,8 @@ const handlerFormUrl = (path, elements, value, i18n, initialState) => {
       getFeeds(elements, initialState.feeds, i18n);
       break;
     case 'viewedPosts':
-      renderViewedPosts(initialState, value);
+      elements.postsBox.innerHTML = '';
+      getPosts(initialState, elements, initialState.posts, i18n);
       break;
     case 'modal.postId':
       renderModal(value, initialState.posts, elements);

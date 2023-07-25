@@ -22,9 +22,8 @@ export default (initialState, elements, posts, i18n) => {
     );
 
     linkPost.textContent = title;
-
     linkPost.setAttribute('href', link);
-    if (initialState.viewedPosts.has(id)) {
+    if (initialState.viewedPosts.has(id.toString())) {
       linkPost.classList.add('fw-normal', 'link-secondary');
     } else {
       linkPost.classList.add('fw-bold');

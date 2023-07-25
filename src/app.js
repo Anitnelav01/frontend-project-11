@@ -37,10 +37,10 @@ const updatePosts = (state) => {
         return { title, link, description };
       });
       const newPosts = differenceWith(posts, viewedPosts, isEqual);
-      const newPostsWithIds = newPosts.map((post) => {
-        post.id = uniqueId();
-        post.feedId = feed.id;
-        return post;
+      const newPostsWithIds = newPosts.map((postItem) => {
+        postItem.id = Number(uniqueId());
+        postItem.feedId = feed.id;
+        return postItem;
       });
       state.posts.unshift(...newPostsWithIds);
     })
@@ -62,8 +62,8 @@ const getError = (error) => {
   return 'unknown';
 };
 
-const loadRss = (url, watchedState) => {
-  watchedState.loadingProcess = {
+const loadRss = (url, watch) => {
+  watch.loadingProcess = {
     error: null,
     status: 'loading',
   };
@@ -77,20 +77,20 @@ const loadRss = (url, watchedState) => {
       const { feed, posts } = rssParse(response.data.contents);
 
       feed.url = url;
-      feed.id = uniqueId();
+      feed.id = Number(uniqueId());
       posts.forEach((post) => {
-        post.id = uniqueId();
+        post.id = Number(uniqueId());
         post.feedId = feed.id;
       });
-      watchedState.loadingProcess = {
+      watch.loadingProcess = {
         error: null,
         status: 'success',
       };
-      watchedState.feeds.push(feed);
-      watchedState.posts.push(...posts);
+      watch.feeds.push(feed);
+      watch.posts.push(...posts);
     })
     .catch((error) => {
-      watchedState.loadingProcess = {
+      watch.loadingProcess = {
         error: getError(error),
         status: 'failed',
       };
@@ -137,9 +137,9 @@ export default () => {
         },
       };
 
-      const watchedState = render(elements, initialState, i18nInstance);
+      const watch = render(elements, initialState, i18nInstance);
 
-      updatePosts(watchedState);
+      updatePosts(watch);
 
       elements.form.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -150,11 +150,11 @@ export default () => {
         validate(url, urls)
           .then((error) => {
             if (error) {
-              watchedState.form = { error, isValidate: false };
+              watch.form = { error, isValidate: false };
               return;
             }
-            watchedState.form = { error: '', isValidate: true };
-            loadRss(url, watchedState);
+            watch.form = { error: '', isValidate: true };
+            loadRss(url, watch);
           });
       });
 
@@ -163,8 +163,8 @@ export default () => {
         if (!id) {
           return;
         }
-        watchedState.modal.postId = Number(id);
-        watchedState.viewedPosts.add(Number(id));
+        watch.modal.postId = id;
+        watch.viewedPosts.add(id);
       });
     });
 };

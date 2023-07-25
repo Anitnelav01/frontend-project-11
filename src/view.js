@@ -1,6 +1,6 @@
 import onChange from 'on-change';
-import getPosts from './getPosts.js';
-import getFeeds from './getFeeds.js';
+import getPosts from './getPosts';
+import getFeeds from './getFeeds';
 
 const clearData = (elements) => {
   const { input, formFeedback } = elements;
@@ -34,6 +34,7 @@ const renderModal = (value, state, elements) => {
 
 const handlerFormUrl = (path, elements, value, i18n, initialState) => {
   const { formFeedback: isFeedback } = elements;
+  const { postsBox, feedsBox } = elements;
   switch (path) {
     case 'loadingProcess':
       clearData(elements);
@@ -59,15 +60,15 @@ const handlerFormUrl = (path, elements, value, i18n, initialState) => {
       isFeedback.textContent = i18n.t(`errors.${initialState.form.error}`);
       break;
     case 'posts':
-      elements.postsBox.innerHTML = '';
+      postsBox.innerHTML = '';
       getPosts(initialState, elements, initialState.posts, i18n);
       break;
     case 'feeds':
-      elements.feedsBox.innerHTML = '';
+      feedsBox.innerHTML = '';
       getFeeds(elements, initialState.feeds, i18n);
       break;
     case 'viewedPosts':
-      elements.postsBox.innerHTML = '';
+      postsBox.innerHTML = '';
       getPosts(initialState, elements, initialState.posts, i18n);
       break;
     case 'modal.postId':

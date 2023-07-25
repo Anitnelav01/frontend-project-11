@@ -2,18 +2,18 @@
 root: true
 
 env:
-  browser: true
   es2021: true
+  browser: true
 extends:
   - 'airbnb-base'
 overrides: []
+parser: "@babel/eslint-parser"
 parserOptions:
   ecmaVersion: latest
   sourceType: module
 rules:
+  import/extensions: 1
   no-console: 0
-  import/extensions:
-    - ignorePackages
-    - js: always
   no-underscore-dangle: [2, { "allow": ["__filename", "__dirname"] }]
   max-len: [2, 120]
+

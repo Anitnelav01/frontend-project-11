@@ -1,11 +1,11 @@
 import i18next from 'i18next';
 import axios from 'axios';
 import * as yup from 'yup';
-import { uniqueId, differenceWith, isEqual } from 'lodash';
-import resources from './locale/resources.js';
-import render from './view.js';
-import locale from './locale/locale.js';
-import rssParse from './rssParse.js';
+import { uniqueId } from 'lodash';
+import resources from './locale/resources';
+import watch from './view';
+import locale from './locale/locale';
+import rssParse from './rssParse';
 
 const getProxyUrl = (url) => {
   const proxyUrl = new URL('/get', 'https://allorigins.hexlet.app');
@@ -36,12 +36,13 @@ const updatePosts = (state) => {
         const { title, link, description } = post;
         return { title, link, description };
       });
-      const newPosts = differenceWith(posts, viewedPosts, isEqual);
-      const newPostsWithIds = newPosts.map((postItem) => {
-        postItem.id = Number(uniqueId());
-        postItem.feedId = feed.id;
-        return postItem;
-      });
+      const linksOfPostsFromState = viewedPosts.map((post) => post.link);
+      const newPosts = posts.filter(
+        ({ link }) => !linksOfPostsFromState.includes(link),
+      );
+      const newPostsWithIds = newPosts.map((post) => (
+        { ...post, id: uniqueId(), feedId: feed.id }
+      ));
       state.posts.unshift(...newPostsWithIds);
     })
     .catch((error) => {
@@ -62,8 +63,9 @@ const getError = (error) => {
   return 'unknown';
 };
 
-const loadRss = (url, watch) => {
-  watch.loadingProcess = {
+const loadRss = (url, watchedState) => {
+  // eslint-disable-next-line no-param-reassign
+  watchedState.loadingProcess = {
     error: null,
     status: 'loading',
   };
@@ -77,20 +79,23 @@ const loadRss = (url, watch) => {
       const { feed, posts } = rssParse(response.data.contents);
 
       feed.url = url;
-      feed.id = Number(uniqueId());
-      posts.forEach((post) => {
-        post.id = Number(uniqueId());
-        post.feedId = feed.id;
-      });
-      watch.loadingProcess = {
+      feed.id = uniqueId();
+      const newPostsWithIds = posts.map((post) => ({
+        ...post,
+        id: uniqueId(),
+        feedId: feed.id,
+      }));
+      // eslint-disable-next-line no-param-reassign
+      watchedState.loadingProcess = {
         error: null,
         status: 'success',
       };
-      watch.feeds.push(feed);
-      watch.posts.push(...posts);
+      watchedState.feeds.push(feed);
+      watchedState.posts.push(...newPostsWithIds);
     })
     .catch((error) => {
-      watch.loadingProcess = {
+      // eslint-disable-next-line no-param-reassign
+      watchedState.loadingProcess = {
         error: getError(error),
         status: 'failed',
       };
@@ -137,9 +142,9 @@ export default () => {
         },
       };
 
-      const watch = render(elements, initialState, i18nInstance);
+      const watchedState = watch(elements, initialState, i18nInstance);
 
-      updatePosts(watch);
+      updatePosts(watchedState);
 
       elements.form.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -150,11 +155,11 @@ export default () => {
         validate(url, urls)
           .then((error) => {
             if (error) {
-              watch.form = { error, isValidate: false };
+              watchedState.form = { error, isValidate: false };
               return;
             }
-            watch.form = { error: '', isValidate: true };
-            loadRss(url, watch);
+            watchedState.form = { error: '', isValidate: true };
+            loadRss(url, watchedState);
           });
       });
 
@@ -163,8 +168,8 @@ export default () => {
         if (!id) {
           return;
         }
-        watch.modal.postId = id;
-        watch.viewedPosts.add(id);
+        watchedState.modal.postId = id;
+        watchedState.viewedPosts.add(id);
       });
     });
 };

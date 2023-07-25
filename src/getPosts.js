@@ -8,45 +8,44 @@ export default (initialState, elements, posts, i18n) => {
   divBlockTitle.classList.add('card-body');
   listsPost.classList.add('list-group', 'border-0', 'rounded-0');
   posts.forEach((item) => {
-      const { id, title, link } = item;
-      const itemPost = document.createElement('li');
-      const linkPost = document.createElement('a');
-      const buttonPost = document.createElement('button');
-      itemPost.classList.add(
-        'list-group-item',
-        'd-flex',
-        'justify-content-between',
-        'align-items-start',
-        'border-0',
-        'border-end-0',
-      );
+    const { id, title, link } = item;
+    const itemPost = document.createElement('li');
+    const linkPost = document.createElement('a');
+    const buttonPost = document.createElement('button');
+    itemPost.classList.add(
+      'list-group-item',
+      'd-flex',
+      'justify-content-between',
+      'align-items-start',
+      'border-0',
+      'border-end-0',
+    );
 
-      linkPost.textContent = title;
+    linkPost.textContent = title;
 
-      linkPost.setAttribute('href', link);
-      linkPost.classList.add('fw-bold');
-      /*if (initialState.viewedPosts.has(id)) {
+    linkPost.setAttribute('href', link);
+      if (initialState.viewedPosts.has(id)) {
         linkPost.classList.add('fw-normal', 'link-secondary');
       } else {
         linkPost.classList.add('fw-bold');
-      }*/
-      linkPost.setAttribute('data-id', id);
-      linkPost.setAttribute('target', '_blank');
-      linkPost.setAttribute('rel', 'noopener noreferrer');
-      buttonPost.setAttribute('type', 'button');
+      }
+    linkPost.setAttribute('data-id', id);
+    linkPost.setAttribute('target', '_blank');
+    linkPost.setAttribute('rel', 'noopener noreferrer');
+    buttonPost.setAttribute('type', 'button');
 
-      buttonPost.classList.add('btn', 'btn-outline-primary', 'btn-sm');
+    buttonPost.classList.add('btn', 'btn-outline-primary', 'btn-sm');
 
-      buttonPost.setAttribute('data-id', id);
-      buttonPost.setAttribute('data-bs-toggle', 'modal');
-      buttonPost.setAttribute('data-bs-target', '#exampleModal');
+    buttonPost.setAttribute('data-id', id);
+    buttonPost.setAttribute('data-bs-toggle', 'modal');
+    buttonPost.setAttribute('data-bs-target', '#exampleModal');
 
-      buttonPost.textContent = i18n.t('preview');
+    buttonPost.textContent = i18n.t('preview');
 
-      itemPost.append(linkPost);
-      itemPost.append(buttonPost);
-      listsPost.prepend(itemPost);
-  });
+    itemPost.append(linkPost);
+    itemPost.append(buttonPost);
+    listsPost.prepend(itemPost);
+});
 
   const h2 = document.createElement('h2');
 

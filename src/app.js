@@ -42,9 +42,7 @@ const updatePosts = (state) => {
         post.feedId = feed.id;
         return post;
       });
-     // if (newPostsWithIds[0].pubDate !== state.posts[0].pubDate) {
-        state.posts.unshift(...newPostsWithIds);
-      //}
+      state.posts.unshift(...newPostsWithIds);
     })
     .catch((error) => {
       console.error(error);
@@ -110,63 +108,63 @@ export default () => {
     .then(() => {
       yup.setLocale(locale);
 
-    const elements = {
-      container: document.querySelector('.container-xxl'),
-      form: document.querySelector('.rss-form'),
-      input: document.getElementById('url-input'),
-      formFeedback: document.querySelector('.feedback'),
-      submit: document.querySelector('.rss-form button[type="submit"]'),
-      feedsBox: document.querySelector('.feeds'),
-      postsBox: document.querySelector('.posts'),
-      modal: document.querySelector('.modal'),
-      buttonModal: document.querySelector('[data-bs-toggle="modal"]'),
-    };
+      const elements = {
+        container: document.querySelector('.container-xxl'),
+        form: document.querySelector('.rss-form'),
+        input: document.getElementById('url-input'),
+        formFeedback: document.querySelector('.feedback'),
+        submit: document.querySelector('.rss-form button[type="submit"]'),
+        feedsBox: document.querySelector('.feeds'),
+        postsBox: document.querySelector('.posts'),
+        modal: document.querySelector('.modal'),
+        buttonModal: document.querySelector('[data-bs-toggle="modal"]'),
+      };
 
-    const initialState = {
-      form: {
-        isValidate: true,
-        error: null,
-      },
-      loadingProcess: {
-        status: 'idle',
-        error: null,
-      },
-      feeds: [],
-      posts: [],
-      viewedPosts: new Set(),
-      modal: {
-        postId: null,
-      },
-    };
+      const initialState = {
+        form: {
+          isValidate: true,
+          error: null,
+        },
+        loadingProcess: {
+          status: 'idle',
+          error: null,
+        },
+        feeds: [],
+        posts: [],
+        viewedPosts: new Set(),
+        modal: {
+          postId: null,
+        },
+      };
 
-    const watchedState = render(elements, initialState, i18nInstance);
+      const watchedState = render(elements, initialState, i18nInstance);
 
-    updatePosts(watchedState);
-  
-    elements.form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const formData = new FormData(e.target);
-      const url = formData.get('url');
-      const urls = initialState.feeds.map((feed) => feed.url);
+      updatePosts(watchedState);
 
-      validate(url, urls)
-        .then((error) => {
-          if (error) {
-            watchedState.form = { error, isValidate: false };
-            return;
-          }
-          watchedState.form = { error: '', isValidate: true };
-          loadRss(url, watchedState);
-        });
-    });
+      elements.form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const url = formData.get('url');
+        const urls = initialState.feeds.map((feed) => feed.url);
 
-    elements.postsBox.addEventListener('click', (e) => {
-      const { id } = e.target.dataset;
-      if (!id) {
-        return;
-      }
-      watchedState.modal.postId = Number(id);
-      watchedState.viewedPosts.add(Number(id));
-    });
+        validate(url, urls)
+          .then((error) => {
+            if (error) {
+              watchedState.form = { error, isValidate: false };
+              return;
+            }
+            watchedState.form = { error: '', isValidate: true };
+            loadRss(url, watchedState);
+          });
+      });
+
+      elements.postsBox.addEventListener('click', (e) => {
+        const { id } = e.target.dataset;
+        if (!id) {
+          return;
+        }
+        watchedState.modal.postId = Number(id);
+        watchedState.viewedPosts.add(Number(id));
+      });
     });
 };

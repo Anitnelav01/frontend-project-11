@@ -42,9 +42,9 @@ const updatePosts = (state) => {
         post.feedId = feed.id;
         return post;
       });
-      if (newPostsWithIds[0].pubDate !== state.posts[0].pubDate) {
+     // if (newPostsWithIds[0].pubDate !== state.posts[0].pubDate) {
         state.posts.unshift(...newPostsWithIds);
-      }
+      //}
     })
     .catch((error) => {
       console.error(error);
@@ -65,26 +65,37 @@ const getError = (error) => {
 };
 
 const loadRss = (url, watchedState) => {
-  watchedState.loadingProcess.state = 'loading';
+  watchedState.loadingProcess = {
+    error: null,
+    status: 'loading',
+  };
 
-  axios.get(getProxyUrl(url))
+  axios({
+    method: 'get',
+    url: getProxyUrl(url),
+    timeout: 10000,
+  })
     .then((response) => {
       const { feed, posts } = rssParse(response.data.contents);
 
       feed.url = url;
-      posts.map((post) => {
-        const postId = post;
-        postId.id = uniqueId();
-        return postId;
+      feed.id = uniqueId();
+      posts.forEach((post) => {
+        post.id = uniqueId();
+        post.feedId = feed.id;
       });
-      watchedState.loadingProcess.state = 'success';
+      watchedState.loadingProcess = {
+        error: null,
+        status: 'success',
+      };
       watchedState.feeds.push(feed);
-      watchedState.posts.push([...posts]);
+      watchedState.posts.push(...posts);
     })
     .catch((error) => {
-      const err = getError(error);
-      watchedState.loadingProcess.error = err;
-      watchedState.loadingProcess.state = 'failed';
+      watchedState.loadingProcess = {
+        error: getError(error),
+        status: 'failed',
+      };
     });
 };
 
@@ -98,64 +109,64 @@ export default () => {
   })
     .then(() => {
       yup.setLocale(locale);
+
+    const elements = {
+      container: document.querySelector('.container-xxl'),
+      form: document.querySelector('.rss-form'),
+      input: document.getElementById('url-input'),
+      formFeedback: document.querySelector('.feedback'),
+      submit: document.querySelector('.rss-form button[type="submit"]'),
+      feedsBox: document.querySelector('.feeds'),
+      postsBox: document.querySelector('.posts'),
+      modal: document.querySelector('.modal'),
+      buttonModal: document.querySelector('[data-bs-toggle="modal"]'),
+    };
+
+    const initialState = {
+      form: {
+        isValidate: true,
+        error: null,
+      },
+      loadingProcess: {
+        status: 'idle',
+        error: null,
+      },
+      feeds: [],
+      posts: [],
+      viewedPosts: new Set(),
+      modal: {
+        postId: null,
+      },
+    };
+
+    const watchedState = render(elements, initialState, i18nInstance);
+
+    updatePosts(watchedState);
+  
+    elements.form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const url = formData.get('url');
+      const urls = initialState.feeds.map((feed) => feed.url);
+
+      validate(url, urls)
+        .then((error) => {
+          if (error) {
+            watchedState.form = { error, isValidate: false };
+            return;
+          }
+          watchedState.form = { error: '', isValidate: true };
+          loadRss(url, watchedState);
+        });
     });
 
-  const elements = {
-    container: document.querySelector('.container-xxl'),
-    form: document.querySelector('.rss-form'),
-    input: document.getElementById('url-input'),
-    formFeedback: document.querySelector('.feedback'),
-    submit: document.querySelector('.rss-form button[type="submit"]'),
-    feedsBox: document.querySelector('.feeds'),
-    postsBox: document.querySelector('.posts'),
-    modal: document.querySelector('.modal'),
-    buttonModal: document.querySelector('[data-bs-toggle="modal"]'),
-  };
-
-  const initialState = {
-    form: {
-      isValidate: true,
-      error: null,
-    },
-    loadingProcess: {
-      state: '',
-      error: null,
-    },
-    feeds: [],
-    posts: [],
-    viewedPosts: new Set(),
-    modal: {
-      postId: null,
-    },
-  };
-
-  const view = render(elements, initialState, i18nInstance);
-
-  elements.form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const url = formData.get('url');
-    const urls = initialState.feeds.map((feed) => feed.url);
-
-    validate(url, urls)
-      .then((error) => {
-        if (error) {
-          view.form = { error, isValidate: false };
-          return;
-        }
-        view.form = { error: '', isValidate: true };
-        loadRss(url, view);
-      });
-  });
-
-  elements.postsBox.addEventListener('click', (e) => {
-    const { id } = e.target.dataset;
-    if (!id) {
-      return;
-    }
-    view.modal.postId = Number(id);
-    view.viewedPosts.add(Number(id));
-
-    updatePosts(view);
-  });
+    elements.postsBox.addEventListener('click', (e) => {
+      const { id } = e.target.dataset;
+      if (!id) {
+        return;
+      }
+      watchedState.modal.postId = Number(id);
+      watchedState.viewedPosts.add(Number(id));
+    });
+    });
 };

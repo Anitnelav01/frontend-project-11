@@ -1,4 +1,4 @@
-export default (elements, posts, i18n) => {
+export default (initialState, elements, posts, i18n) => {
   const { postsBox } = elements;
   const divContainer = document.createElement('div');
   const divBlockTitle = document.createElement('div');
@@ -7,8 +7,7 @@ export default (elements, posts, i18n) => {
   divContainer.classList.add('card', 'border-0');
   divBlockTitle.classList.add('card-body');
   listsPost.classList.add('list-group', 'border-0', 'rounded-0');
-  posts.forEach((items) => {
-    items.forEach((item) => {
+  posts.forEach((item) => {
       const { id, title, link } = item;
       const itemPost = document.createElement('li');
       const linkPost = document.createElement('a');
@@ -25,9 +24,12 @@ export default (elements, posts, i18n) => {
       linkPost.textContent = title;
 
       linkPost.setAttribute('href', link);
-
       linkPost.classList.add('fw-bold');
-
+      /*if (initialState.viewedPosts.has(id)) {
+        linkPost.classList.add('fw-normal', 'link-secondary');
+      } else {
+        linkPost.classList.add('fw-bold');
+      }*/
       linkPost.setAttribute('data-id', id);
       linkPost.setAttribute('target', '_blank');
       linkPost.setAttribute('rel', 'noopener noreferrer');
@@ -44,7 +46,6 @@ export default (elements, posts, i18n) => {
       itemPost.append(linkPost);
       itemPost.append(buttonPost);
       listsPost.prepend(itemPost);
-    });
   });
 
   const h2 = document.createElement('h2');

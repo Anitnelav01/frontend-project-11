@@ -13,12 +13,10 @@ const clearData = (elements) => {
 const renderModal = (value, state, elements) => {
   let currentPost;
 
-  state.forEach((items) => {
-    items.forEach((item) => {
-      if (Number(item.id) === Number(value)) {
-        currentPost = item;
-      }
-    });
+  state.forEach((item) => {
+    if (Number(item.id) === Number(value)) {
+      currentPost = item;
+    }
   });
 
   const {
@@ -45,19 +43,18 @@ const renderViewedPosts = (initialState) => {
 const handlerFormUrl = (path, elements, value, i18n, initialState) => {
   const { formFeedback: isFeedback } = elements;
   switch (path) {
-    case 'loadingProcess.state':
+    case 'loadingProcess':
       clearData(elements);
-      if (initialState.loadingProcess.state === 'loading') {
+      if (initialState.loadingProcess.status === 'loading') {
         isFeedback.textContent = '';
       }
-      if (initialState.loadingProcess.state === 'success') {
+      if (initialState.loadingProcess.status === 'success') {
         elements.formFeedback.classList.add('text-success');
         isFeedback.textContent = i18n.t('loading.success');
         elements.form.reset();
         elements.input.focus();
       }
-
-      if (initialState.loadingProcess.state === 'failed') {
+      if (initialState.loadingProcess.status === 'failed') {
         elements.formFeedback.classList.add('text-danger');
         elements.input.classList.add('is-invalid');
         isFeedback.textContent = i18n.t(`errors.${initialState.loadingProcess.error}`);
@@ -71,7 +68,7 @@ const handlerFormUrl = (path, elements, value, i18n, initialState) => {
       break;
     case 'posts':
       elements.postsBox.innerHTML = '';
-      getPosts(elements, initialState.posts, i18n);
+      getPosts(initialState, elements, initialState.posts, i18n);
       break;
     case 'feeds':
       elements.feedsBox.innerHTML = '';

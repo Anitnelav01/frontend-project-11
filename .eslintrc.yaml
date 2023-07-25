@@ -18,8 +18,5 @@ parserOptions:
 
 rules:
   no-console: 0
-  import/extensions:
-    - ignorePackages
-    - js: always
   no-underscore-dangle: [2, { "allow": ["__filename", "__dirname"] }]
   max-len: [2, 120]

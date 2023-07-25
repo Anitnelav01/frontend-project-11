@@ -1,6 +1,8 @@
 import onChange from 'on-change';
-import getPosts from './getPosts';
-import getFeeds from './getFeeds';
+// eslint-disable-next-line no-param-reassign
+import getPosts from './getPosts.js';
+// eslint-disable-next-line no-param-reassign
+import getFeeds from './getFeeds.js';
 
 const clearData = (elements) => {
   const { input, formFeedback } = elements;

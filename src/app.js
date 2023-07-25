@@ -2,10 +2,14 @@ import i18next from 'i18next';
 import axios from 'axios';
 import * as yup from 'yup';
 import { uniqueId } from 'lodash';
-import resources from './locale/resources';
-import watch from './view';
-import locale from './locale/locale';
-import rssParse from './rssParse';
+// eslint-disable-next-line no-param-reassign
+import resources from './locale/resources.js';
+// eslint-disable-next-line no-param-reassign
+import watch from './view.js';
+// eslint-disable-next-line no-param-reassign
+import locale from './locale/locale.js';
+// eslint-disable-next-line no-param-reassign
+import rssParse from './rssParse.js';
 
 const getProxyUrl = (url) => {
   const proxyUrl = new URL('/get', 'https://allorigins.hexlet.app');

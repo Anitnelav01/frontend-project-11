@@ -1,7 +1,5 @@
 import onChange from 'on-change';
-// eslint-disable-next-line no-param-reassign
 import getPosts from './getPosts.js';
-// eslint-disable-next-line no-param-reassign
 import getFeeds from './getFeeds.js';
 
 const clearData = (elements) => {
@@ -34,32 +32,45 @@ const renderModal = (value, state, elements) => {
   modalLink.setAttribute('href', link);
 };
 
-const handlerFormUrl = (path, elements, value, i18n, initialState) => {
+const handleLoadingProcess = (value, initialState, elements, i18n) => {
   const { formFeedback: isFeedback } = elements;
+  switch (value) {
+    case 'loading':
+      isFeedback.textContent = '';
+      break;
+    case 'success':
+      elements.formFeedback.classList.add('text-success');
+      isFeedback.textContent = i18n.t('loading.success');
+      elements.form.reset();
+      elements.input.focus();
+      break;
+    case 'failed':
+      elements.formFeedback.classList.add('text-danger');
+      elements.input.classList.add('is-invalid');
+      isFeedback.textContent = i18n.t(`errors.${initialState.loadingProcess.error}`);
+      break;
+    default:
+      break;
+  }
+};
+
+const handleFrom = (initialState, elements, i18n) => {
+  const { formFeedback: isFeedback } = elements;
+  elements.formFeedback.classList.add('text-danger');
+  elements.input.classList.add('is-invalid');
+  isFeedback.textContent = i18n.t(`errors.${initialState.form.error}`);
+};
+
+const handlerFormUrl = (path, elements, value, i18n, initialState) => {
   const { postsBox, feedsBox } = elements;
   switch (path) {
     case 'loadingProcess':
       clearData(elements);
-      if (initialState.loadingProcess.status === 'loading') {
-        isFeedback.textContent = '';
-      }
-      if (initialState.loadingProcess.status === 'success') {
-        elements.formFeedback.classList.add('text-success');
-        isFeedback.textContent = i18n.t('loading.success');
-        elements.form.reset();
-        elements.input.focus();
-      }
-      if (initialState.loadingProcess.status === 'failed') {
-        elements.formFeedback.classList.add('text-danger');
-        elements.input.classList.add('is-invalid');
-        isFeedback.textContent = i18n.t(`errors.${initialState.loadingProcess.error}`);
-      }
+      handleLoadingProcess(value.status, initialState, elements, i18n);
       break;
     case 'form':
       clearData(elements);
-      elements.formFeedback.classList.add('text-danger');
-      elements.input.classList.add('is-invalid');
-      isFeedback.textContent = i18n.t(`errors.${initialState.form.error}`);
+      handleFrom(initialState, elements, i18n);
       break;
     case 'posts':
       postsBox.innerHTML = '';

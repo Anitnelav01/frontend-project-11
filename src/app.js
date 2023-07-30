@@ -2,14 +2,13 @@ import i18next from 'i18next';
 import axios from 'axios';
 import * as yup from 'yup';
 import { uniqueId } from 'lodash';
-// eslint-disable-next-line no-param-reassign
 import resources from './locale/resources.js';
-// eslint-disable-next-line no-param-reassign
 import watch from './view.js';
-// eslint-disable-next-line no-param-reassign
 import locale from './locale/locale.js';
-// eslint-disable-next-line no-param-reassign
 import rssParse from './rssParse.js';
+
+const timeoutAxios = 10000;
+const timeoutMs = 5000;
 
 const getProxyUrl = (url) => {
   const proxyUrl = new URL('/get', 'https://allorigins.hexlet.app');
@@ -32,29 +31,29 @@ const validate = (url, urls) => {
 };
 
 const updatePosts = (state) => {
-  const promises = state.feeds.map((feed) => axios.get(getProxyUrl(feed.url))
+  const promises = state.feeds.map((feed) => axios({
+    method: 'get',
+    url: getProxyUrl(feed.url),
+    timeout: timeoutAxios,
+  })
     .then((response) => {
       const { posts } = rssParse(response.data.contents);
-      const postsOfFeed = state.posts.filter(({ feedId }) => feedId === feed.id);
-      const viewedPosts = postsOfFeed.map((post) => {
-        const { title, link, description } = post;
-        return { title, link, description };
-      });
-      const linksOfPostsFromState = viewedPosts.map((post) => post.link);
+      const currentPosts = state.posts.filter(({ feedId }) => feedId === feed.id);
+      const linksOfPostsState = currentPosts.map((post) => post.link);
       const newPosts = posts.filter(
-        ({ link }) => !linksOfPostsFromState.includes(link),
+        ({ link }) => !linksOfPostsState.includes(link),
       );
-      const newPostsWithIds = newPosts.map((post) => (
+      const relatedPosts = newPosts.map((post) => (
         { ...post, id: uniqueId(), feedId: feed.id }
       ));
-      state.posts.unshift(...newPostsWithIds);
+      state.posts.unshift(...relatedPosts);
     })
     .catch((error) => {
       console.error(error);
     }));
 
   return Promise.all(promises)
-    .finally(setTimeout(() => updatePosts(state), 5000));
+    .finally(setTimeout(() => updatePosts(state), timeoutMs));
 };
 
 const getError = (error) => {
@@ -77,14 +76,14 @@ const loadRss = (url, watchedState) => {
   axios({
     method: 'get',
     url: getProxyUrl(url),
-    timeout: 10000,
+    timeout: timeoutAxios,
   })
     .then((response) => {
       const { feed, posts } = rssParse(response.data.contents);
 
       feed.url = url;
       feed.id = uniqueId();
-      const newPostsWithIds = posts.map((post) => ({
+      const relatedPosts = posts.map((post) => ({
         ...post,
         id: uniqueId(),
         feedId: feed.id,
@@ -95,7 +94,7 @@ const loadRss = (url, watchedState) => {
         status: 'success',
       };
       watchedState.feeds.push(feed);
-      watchedState.posts.push(...newPostsWithIds);
+      watchedState.posts.push(...relatedPosts);
     })
     .catch((error) => {
       // eslint-disable-next-line no-param-reassign

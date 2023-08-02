@@ -39,9 +39,9 @@ const updatePosts = (state) => {
     .then((response) => {
       const { posts } = rssParse(response.data.contents);
       const currentPosts = state.posts.filter(({ feedId }) => feedId === feed.id);
-      const linksOfPostsState = currentPosts.map((post) => post.link);
+      const linksState = currentPosts.map((post) => post.link);
       const newPosts = posts.filter(
-        ({ link }) => !linksOfPostsState.includes(link),
+        ({ link }) => !linksState.includes(link),
       );
       const relatedPosts = newPosts.map((post) => (
         { ...post, id: uniqueId(), feedId: feed.id }

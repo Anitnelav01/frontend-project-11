@@ -1,17 +1,18 @@
-export default (elements, feeds, i18n) => {
+export default (initialState, elements, i18n) => {
   const { feedsBox } = elements;
   const divContainer = document.createElement('div');
   const divBlock = document.createElement('div');
   const h2 = document.createElement('h2');
   const ul = document.createElement('ul');
 
+  feedsBox.innerHTML = '';
   divContainer.classList.add('card', 'border-0');
   divBlock.classList.add('card-body');
   ul.classList.add('list-group', 'border-0', 'rounded-0');
   h2.classList.add('card-title', 'h4');
 
   h2.textContent = i18n.t('feeds');
-  feeds.forEach((feed) => {
+  initialState.feeds.forEach((feed) => {
     const li = document.createElement('li');
     const h3 = document.createElement('h3');
     const p = document.createElement('p');

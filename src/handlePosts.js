@@ -1,13 +1,14 @@
-export default (initialState, elements, posts, i18n) => {
+export default (initialState, elements, i18n) => {
   const { postsBox } = elements;
   const divContainer = document.createElement('div');
   const divBlockTitle = document.createElement('div');
   const listsPost = document.createElement('ul');
 
+  postsBox.innerHTML = '';
   divContainer.classList.add('card', 'border-0');
   divBlockTitle.classList.add('card-body');
   listsPost.classList.add('list-group', 'border-0', 'rounded-0');
-  posts.forEach((item) => {
+  initialState.posts.forEach((item) => {
     const { id, title, link } = item;
     const itemPost = document.createElement('li');
     const linkPost = document.createElement('a');

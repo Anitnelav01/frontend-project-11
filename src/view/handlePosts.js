@@ -1,14 +1,14 @@
-export default (initialState, elements, i18n) => {
+export default (state, elements, i18n) => {
   const { postsBox } = elements;
-  const divContainer = document.createElement('div');
-  const divBlockTitle = document.createElement('div');
+  const postContainer = document.createElement('div');
+  const postTitle = document.createElement('div');
   const listsPost = document.createElement('ul');
 
   postsBox.innerHTML = '';
-  divContainer.classList.add('card', 'border-0');
-  divBlockTitle.classList.add('card-body');
+  postContainer.classList.add('card', 'border-0');
+  postTitle.classList.add('card-body');
   listsPost.classList.add('list-group', 'border-0', 'rounded-0');
-  initialState.posts.forEach((item) => {
+  state.posts.forEach((item) => {
     const { id, title, link } = item;
     const itemPost = document.createElement('li');
     const linkPost = document.createElement('a');
@@ -24,7 +24,7 @@ export default (initialState, elements, i18n) => {
 
     linkPost.textContent = title;
     linkPost.setAttribute('href', link);
-    if (initialState.viewedPosts.has(id)) {
+    if (state.viewedPosts.has(id)) {
       linkPost.classList.add('fw-normal', 'link-secondary');
     } else {
       linkPost.classList.add('fw-bold');
@@ -52,8 +52,8 @@ export default (initialState, elements, i18n) => {
   h2.classList.add('card-title', 'h4');
   h2.textContent = i18n.t('posts');
 
-  divBlockTitle.append(h2);
-  divContainer.append(divBlockTitle);
-  divContainer.append(listsPost);
-  postsBox.append(divContainer);
+  postTitle.append(h2);
+  postContainer.append(postTitle);
+  postContainer.append(listsPost);
+  postsBox.append(postContainer);
 };

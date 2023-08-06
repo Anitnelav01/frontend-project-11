@@ -3,7 +3,7 @@ import axios from 'axios';
 import * as yup from 'yup';
 import { uniqueId } from 'lodash';
 import resources from './locale/resources.js';
-import watch from './view.js';
+import watch from './view/index.js';
 import locale from './locale/locale.js';
 import rssParse from './rssParse.js';
 
@@ -125,6 +125,9 @@ export default () => {
         feedsBox: document.querySelector('.feeds'),
         postsBox: document.querySelector('.posts'),
         modal: document.querySelector('.modal'),
+        modalTitle: document.querySelector('.modal-title'),
+        modalBody: document.querySelector('.modal-body'),
+        modalLink: document.querySelector('.btn-primary'),
         buttonModal: document.querySelector('[data-bs-toggle="modal"]'),
       };
 

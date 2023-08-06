@@ -10,61 +10,55 @@ const removeError = (elements) => {
   input.classList.remove('is-invalid');
 };
 
-const showError = (initialState, elements, i18n) => {
-  const { formFeedback: isFeedback } = elements;
-  elements.formFeedback.classList.add('text-danger');
-  elements.input.classList.add('is-invalid');
-  isFeedback.textContent = i18n.t(`errors.${initialState.form.error}`);
+const showError = (state, elements, i18n) => {
+  const { formFeedback, input } = elements;
+  formFeedback.classList.add('text-danger');
+  input.classList.add('is-invalid');
+  formFeedback.textContent = i18n.t(`errors.${state.form.error}`);
 };
 
-const handleModal = (value, initialState, elements) => {
-  let currentPost;
-
-  initialState.posts.forEach((item) => {
-    if (Number(item.id) === Number(value)) {
-      currentPost = item;
-    }
-  });
+const handleModal = (value, state, elements) => {
+  const {
+    modal, modalTitle, modalBody, modalLink,
+  } = elements;
+  const currentPost = state.posts.find((item) => item.id === value);
 
   const {
     description, id, title, link,
   } = currentPost;
-  const modalTitle = document.querySelector('.modal-title');
-  const modalBody = document.querySelector('.modal-body');
-  const modalLink = document.querySelector('.btn-primary');
 
-  elements.modal.setAttribute('data-id', id);
+  modal.setAttribute('data-id', id);
   modalTitle.textContent = title;
   modalBody.textContent = description;
   modalLink.setAttribute('href', link);
 };
 
-const handleLoadingProcess = (value, initialState, elements, i18n) => {
-  const { formFeedback: isFeedback } = elements;
+const handleLoadingProcess = (value, state, elements, i18n) => {
+  const { formFeedback, form, input } = elements;
   removeError(elements);
   switch (value.status) {
     case 'loading':
-      isFeedback.textContent = '';
+      formFeedback.textContent = '';
       break;
     case 'success':
-      elements.formFeedback.classList.add('text-success');
-      isFeedback.textContent = i18n.t('loading.success');
-      elements.form.reset();
-      elements.input.focus();
+      formFeedback.classList.add('text-success');
+      formFeedback.textContent = i18n.t('loading.success');
+      form.reset();
+      input.focus();
       break;
     case 'failed':
-      elements.formFeedback.classList.add('text-danger');
-      elements.input.classList.add('is-invalid');
-      isFeedback.textContent = i18n.t(`errors.${initialState.loadingProcess.error}`);
+      formFeedback.classList.add('text-danger');
+      input.classList.add('is-invalid');
+      formFeedback.textContent = i18n.t(`errors.${state.loadingProcess.error}`);
       break;
     default:
       break;
   }
 };
 
-const handleFrom = (initialState, elements, i18n) => {
-  if (!initialState.form.isValidate) {
-    showError(initialState, elements, i18n);
+const handleFrom = (state, elements, i18n) => {
+  if (!state.form.isValidate) {
+    showError(state, elements, i18n);
     return;
   }
   removeError(elements);
